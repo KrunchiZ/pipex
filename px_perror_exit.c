@@ -1,27 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pipex.h                                            :+:      :+:    :+:   */
+/*   px_perror_exit.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: kchiang <kchiang@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/28 15:52:19 by kchiang           #+#    #+#             */
-/*   Updated: 2025/07/30 01:18:38 by kchiang          ###   ########.fr       */
+/*   Created: 2025/07/30 00:40:09 by kchiang           #+#    #+#             */
+/*   Updated: 2025/07/30 00:40:41 by kchiang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef PIPEX_H
-# define PIPEX_H
+#include "pipex.h"
 
-# include "libft.h"
-# include <sys/types.h>
-# include <sys/wait.h>
-
-# define HERE_DOC	"here_doc"
-# define APPEND		0B01
-# define OVERWRITE	0B10
-
-void	px_perror_exit(char *str);
-void	px_init_input_fd(int *fd, char **argv, t_uchar output_flag);
-
-#endif
+void	px_perror_exit(char *str)
+{
+	perror(str);
+	exit(EXIT_FAILURE);
+}
