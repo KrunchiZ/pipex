@@ -6,7 +6,7 @@
 /*   By: kchiang <kchiang@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/28 15:52:19 by kchiang           #+#    #+#             */
-/*   Updated: 2025/07/30 01:18:38 by kchiang          ###   ########.fr       */
+/*   Updated: 2025/07/30 01:37:56 by kchiang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,6 @@
 # define OVERWRITE	0B10
 
 void	px_perror_exit(char *str);
-void	px_init_input_fd(int *fd, char **argv, t_uchar output_flag);
+void	px_init_input_fd(int *fd, char **argv, t_uchar *output_flag);
 
 #endif

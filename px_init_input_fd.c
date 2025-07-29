@@ -6,22 +6,23 @@
 /*   By: kchiang <kchiang@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 00:31:21 by kchiang           #+#    #+#             */
-/*   Updated: 2025/07/30 01:19:19 by kchiang          ###   ########.fr       */
+/*   Updated: 2025/07/30 01:37:41 by kchiang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
+static int	px_input_is_heredoc(char *input_file);
 static void	px_parse_heredoc_fd(int fd, char *line, char **argv);
 
-void	px_init_input_fd(int *fd, char **argv, t_uchar output_flag)
+void	px_init_input_fd(int *fd, char **argv, t_uchar *output_flag)
 {
 	char	*line;
 	int		pipefd[2];
 
-	if (ft_strlen(argv[1]) == 8 && !ft_strncmp(argv[1], HERE_DOC, 8))
+	if (px_input_is_heredoc(argv[1]))
 	{
-		output_flag |= APPEND;
+		*output_flag |= APPEND;
 		if (pipe(pipefd) == -1)
 			px_perror_exit("pipe");
 		close(pipefd[0]);
@@ -32,12 +33,23 @@ void	px_init_input_fd(int *fd, char **argv, t_uchar output_flag)
 	}
 	else
 	{
-		output_FLAG |= OVERWRITE;
+		*output_FLAG |= OVERWRITE;
 		*fd = open(argv[1], O_RDONLY);
 		if (fd == -1)
 			px_perror_exit("open");
 	}
 	return ;
+}
+
+static int	px_input_is_heredoc(char *input_file)
+{
+	size_t	heredoc_len;
+
+	heredoc_len = ft_strlen(HERE_DOC);
+	if (ft_strlen(input_file) == heredoc_len
+		&& !ft_strncmp(input_file, HERE_DOC, heredoc_len))
+		return (true);
+	return (false);
 }
 
 static void	px_parse_heredoc_fd(int fd, char *line, char **argv, int pipefd)
