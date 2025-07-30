@@ -6,7 +6,7 @@
 /*   By: kchiang <kchiang@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/28 18:35:16 by kchiang           #+#    #+#             */
-/*   Updated: 2025/07/30 01:45:10 by kchiang          ###   ########.fr       */
+/*   Updated: 2025/07/30 20:00:44 by kchiang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,13 +18,15 @@ int	main(int argc, char **argv)
 {
 	int		input_fd;
 	int		cmd_count;
-	t_uchar	output_flag;
+	t_uchar	append_mode;
 
 	px_file_valid_check(argc, argv);
-	output_flag = 0;
-	px_init_input_fd(&input_fd, argv, &output_flag);
+	append_mode = false;
+	px_init_input_fd(&input_fd, argv, &append_mode);
 	cmd_count = argc - 3;
-	px_exec_pipex(output_flag, argv, cmd_count, input_fd);
+	if (append_mode)
+		argv++;
+	px_exec_pipex(append_mode, argv + 2, cmd_count, input_fd);
 	return (EXIT_SUCCESS);
 }
 

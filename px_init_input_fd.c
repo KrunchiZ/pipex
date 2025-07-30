@@ -6,7 +6,7 @@
 /*   By: kchiang <kchiang@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 00:31:21 by kchiang           #+#    #+#             */
-/*   Updated: 2025/07/30 01:37:41 by kchiang          ###   ########.fr       */
+/*   Updated: 2025/07/30 18:03:50 by kchiang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,25 +15,24 @@
 static int	px_input_is_heredoc(char *input_file);
 static void	px_parse_heredoc_fd(int fd, char *line, char **argv);
 
-void	px_init_input_fd(int *fd, char **argv, t_uchar *output_flag)
+void	px_init_input_fd(int *fd, char **argv, t_uchar *append_mode)
 {
 	char	*line;
 	int		pipefd[2];
 
 	if (px_input_is_heredoc(argv[1]))
 	{
-		*output_flag |= APPEND;
+		*append_mode = true;
 		if (pipe(pipefd) == -1)
 			px_perror_exit("pipe");
-		close(pipefd[0]);
 		px_parse_heredoc_fd(STDIN_FILENO, line, argv, pipefd[1]);
-		if (dup2(pipefd[1], *fd) == -1)
-			px_perror_exit("dup2");
 		close(pipefd[1]);
+		if (dup2(pipefd[0], *fd) == -1)
+			px_perror_exit("dup2");
+		close(pipefd[0]);
 	}
 	else
 	{
-		*output_FLAG |= OVERWRITE;
 		*fd = open(argv[1], O_RDONLY);
 		if (fd == -1)
 			px_perror_exit("open");
