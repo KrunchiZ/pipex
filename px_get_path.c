@@ -6,7 +6,7 @@
 /*   By: kchiang <kchiang@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/31 16:24:33 by kchiang           #+#    #+#             */
-/*   Updated: 2025/07/31 18:52:03 by kchiang          ###   ########.fr       */
+/*   Updated: 2025/07/31 18:58:44 by kchiang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ char	*px_get_path(char *cmd, char **envp)
 		if (access(cmd_path, X_OK) == 0)
 			break ;
 	}
-	return (path);
+	return (cmd_path);
 }
 
 static char	**parse_path_env(char **envp)

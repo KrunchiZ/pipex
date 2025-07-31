@@ -6,7 +6,7 @@
 /*   By: kchiang <kchiang@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 14:29:49 by kchiang           #+#    #+#             */
-/*   Updated: 2025/07/31 18:40:37 by kchiang          ###   ########.fr       */
+/*   Updated: 2025/07/31 19:01:59 by kchiang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,7 @@ static void	px_exec_child_process(t_vars vars, char **argv, int *pipefd
 		px_error_abort("error: Empty cmd string.");
 	execpath = px_get_path(cmd[0], vars.envp);
 	execve(execpath, cmd, vars.envp);
+	free(execpath);
 	px_perror_exit("execve");
 	return ;
 }
