@@ -6,7 +6,7 @@
 /*   By: kchiang <kchiang@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 14:29:49 by kchiang           #+#    #+#             */
-/*   Updated: 2025/07/31 13:57:43 by kchiang          ###   ########.fr       */
+/*   Updated: 2025/07/31 18:40:37 by kchiang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,7 @@
 
 static void	px_exec_child_process(t_vars vars, char **argv, int *pipefd,
 				int input_fd);
-
-/* External Variable accessing the Environment config in the terminal.
- * Similar to envp from int main(int argc, char **argv, char **envp){}.
- * */
-extern char	**environ;
+static void	px_init_output_fd(t_vars vars, int *pipefd, int out_fd);
 
 /* Piping function that recurses itself.
  * */
@@ -51,15 +47,21 @@ static void	px_exec_child_process(t_vars vars, char **argv, int *pipefd
 {
 	int		out_fd;
 	char	**cmd;
+	char	*execpath;
 
 	if (dup2(input_f d, STDIN_FILENO) == -1)
 		px_perror_exit("dup2");
 	close(input_fd) + close(pipefd[0]);
 	px_init_output_fd(vars, pipefd, out_fd);
-	/* ft_split argv[0] before parsing to execve.
-	 * split[0] for first arg, whole split for second arg.
-	 * char *envp[1], initialized to NULL.
-	 * */
+	cmd = ft_split(*argv, WHITESPACE);
+	if (!cmd)
+		px_error_abort("error: ft_split failed.");
+	if (**cmd == '\0')
+		px_error_abort("error: Empty cmd string.");
+	execpath = px_get_path(cmd[0], vars.envp);
+	execve(execpath, cmd, vars.envp);
+	px_perror_exit("execve");
+	return ;
 }
 
 static void	px_init_output_fd(t_vars vars, int *pipefd, int out_fd)
