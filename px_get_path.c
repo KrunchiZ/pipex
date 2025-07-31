@@ -6,13 +6,13 @@
 /*   By: kchiang <kchiang@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/31 16:24:33 by kchiang           #+#    #+#             */
-/*   Updated: 2025/07/31 18:58:44 by kchiang          ###   ########.fr       */
+/*   Updated: 2025/07/31 19:24:01 by kchiang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-static char	**parse_path_env(void);
+static char	**px_parse_path_env(char **envp);
 
 char	*px_get_path(char *cmd, char **envp)
 {
@@ -42,7 +42,7 @@ char	*px_get_path(char *cmd, char **envp)
 	return (cmd_path);
 }
 
-static char	**parse_path_env(char **envp)
+static char	**px_parse_path_env(char **envp)
 {
 	char	*env_var;
 	char	**paths;

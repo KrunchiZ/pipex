@@ -6,18 +6,17 @@
 /*   By: kchiang <kchiang@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 00:31:21 by kchiang           #+#    #+#             */
-/*   Updated: 2025/07/31 13:48:59 by kchiang          ###   ########.fr       */
+/*   Updated: 2025/07/31 19:26:49 by kchiang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
 static int	px_input_is_heredoc(char *input_file);
-static void	px_parse_heredoc_fd(char *line, char **argv);
+static void	px_parse_heredoc_fd(char **argv, int pipefd);
 
 void	px_init_input_fd(int *fd, char **argv, t_vars *vars)
 {
-	char	*line;
 	int		pipefd[2];
 
 	if (px_input_is_heredoc(argv[1]))
@@ -25,15 +24,15 @@ void	px_init_input_fd(int *fd, char **argv, t_vars *vars)
 		vars->append_mode = true;
 		if (pipe(pipefd) == -1)
 			px_perror_exit("pipe");
-		px_parse_heredoc_fd(line, argv, pipefd[1]);
+		px_parse_heredoc_fd(argv, pipefd[1]);
 		if (dup2(pipefd[0], *fd) == -1)
 			px_perror_exit("dup2");
-		close(pipefd[0]) + close(pipefd[1]);
+		(void)(close(pipefd[0]) + close(pipefd[1]));
 	}
 	else
 	{
 		*fd = open(argv[1], O_RDONLY);
-		if (fd == -1)
+		if (*fd == -1)
 			px_perror_exit("open");
 	}
 	return ;
@@ -50,9 +49,10 @@ static int	px_input_is_heredoc(char *input_file)
 	return (false);
 }
 
-static void	px_parse_heredoc_fd(char *line, char **argv, int pipefd)
+static void	px_parse_heredoc_fd(char **argv, int pipefd)
 {
 	size_t	limiter_len;
+	char	*line;
 
 	limiter_len = ft_strlen(argv[2]);
 	line = get_next_line(STDIN_FILENO);

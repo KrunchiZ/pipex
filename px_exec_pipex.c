@@ -6,7 +6,7 @@
 /*   By: kchiang <kchiang@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 14:29:49 by kchiang           #+#    #+#             */
-/*   Updated: 2025/07/31 19:01:59 by kchiang          ###   ########.fr       */
+/*   Updated: 2025/07/31 19:22:53 by kchiang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 static void	px_exec_child_process(t_vars vars, char **argv, int *pipefd,
 				int input_fd);
-static void	px_init_output_fd(t_vars vars, int *pipefd, int out_fd);
+static void	px_init_output_fd(t_vars vars, char *file, int *pipefd);
 
 /* Piping function that recurses itself.
  * */
@@ -34,7 +34,7 @@ void	px_exec_pipex(t_vars vars, char **argv, int input_fd)
 		px_exec_child_process(vars, argv, pipefd, input_fd);
 	else
 	{
-		close(pipefd[1]) + close(input_fd);
+		(void)(close(pipefd[1]) + close(input_fd));
 		vars.cmd_count--;
 		px_exec_pipex(vars, argv + 1, pipefd[0]);
 		waitpid(pid, NULL, 0);
@@ -45,14 +45,13 @@ void	px_exec_pipex(t_vars vars, char **argv, int input_fd)
 static void	px_exec_child_process(t_vars vars, char **argv, int *pipefd
 	, int input_fd)
 {
-	int		out_fd;
 	char	**cmd;
 	char	*execpath;
 
-	if (dup2(input_f d, STDIN_FILENO) == -1)
+	if (dup2(input_fd, STDIN_FILENO) == -1)
 		px_perror_exit("dup2");
-	close(input_fd) + close(pipefd[0]);
-	px_init_output_fd(vars, pipefd, out_fd);
+	(void)(close(input_fd) + close(pipefd[0]));
+	px_init_output_fd(vars, argv[1], pipefd);
 	cmd = ft_split(*argv, WHITESPACE);
 	if (!cmd)
 		px_error_abort("error: ft_split failed.");
@@ -65,24 +64,26 @@ static void	px_exec_child_process(t_vars vars, char **argv, int *pipefd
 	return ;
 }
 
-static void	px_init_output_fd(t_vars vars, int *pipefd, int out_fd)
+static void	px_init_output_fd(t_vars vars, char *file, int *pipefd)
 {
+	int		out_fd;
+
 	if (vars.cmd_count > 1)
 	{
 		if (dup2(pipefd[1], STDOUT_FILENO) == -1)
-			px_error_exit("dup2");
+			px_perror_exit("dup2");
 		close(pipefd[1]);
 	}
 	else
 	{
 		if (vars.append_mode == true)
-			out_fd = open(argv[1], O_WRONLY, O_CREAT, O_APPEND);
+			out_fd = open(file, O_WRONLY, O_CREAT, O_APPEND);
 		else
-			out_fd = open(argv[1], O_WRONLY, O_CREAT, O_TRUNC);
+			out_fd = open(file, O_WRONLY, O_CREAT, O_TRUNC);
 		if (out_fd == -1)
 			px_perror_exit("open");
 		if (dup2(out_fd, STDOUT_FILENO) == -1)
 			px_perror_exit("dup2");
-		close(out_fd) + close(pipefd[1]);
+		(void)(close(out_fd) + close(pipefd[1]));
 	}
 }
