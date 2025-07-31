@@ -6,7 +6,7 @@
 /*   By: kchiang <kchiang@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 14:29:49 by kchiang           #+#    #+#             */
-/*   Updated: 2025/07/31 19:22:53 by kchiang          ###   ########.fr       */
+/*   Updated: 2025/08/01 02:23:18 by kchiang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,8 @@ void	px_exec_pipex(t_vars vars, char **argv, int input_fd)
 		px_exec_child_process(vars, argv, pipefd, input_fd);
 	else
 	{
-		(void)(close(pipefd[1]) + close(input_fd));
+		close(pipefd[1]);
+		close(input_fd);
 		vars.cmd_count--;
 		px_exec_pipex(vars, argv + 1, pipefd[0]);
 		waitpid(pid, NULL, 0);
@@ -48,9 +49,10 @@ static void	px_exec_child_process(t_vars vars, char **argv, int *pipefd
 	char	**cmd;
 	char	*execpath;
 
+	close(pipefd[0]);
 	if (dup2(input_fd, STDIN_FILENO) == -1)
 		px_perror_exit("dup2");
-	(void)(close(input_fd) + close(pipefd[0]));
+	close(input_fd);
 	px_init_output_fd(vars, argv[1], pipefd);
 	cmd = ft_split(*argv, WHITESPACE);
 	if (!cmd)
@@ -76,14 +78,16 @@ static void	px_init_output_fd(t_vars vars, char *file, int *pipefd)
 	}
 	else
 	{
+		close(pipefd[1]);
 		if (vars.append_mode == true)
-			out_fd = open(file, O_WRONLY, O_CREAT, O_APPEND);
+			out_fd = open(file, O_WRONLY | O_CREAT | O_APPEND);
 		else
-			out_fd = open(file, O_WRONLY, O_CREAT, O_TRUNC);
+			out_fd = open(file, O_WRONLY | O_CREAT | O_TRUNC);
 		if (out_fd == -1)
-			px_perror_exit("open");
+			px_perror_exit(file);
 		if (dup2(out_fd, STDOUT_FILENO) == -1)
 			px_perror_exit("dup2");
-		(void)(close(out_fd) + close(pipefd[1]));
+		close(out_fd);
 	}
+	return ;
 }

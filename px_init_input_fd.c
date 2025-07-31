@@ -6,7 +6,7 @@
 /*   By: kchiang <kchiang@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 00:31:21 by kchiang           #+#    #+#             */
-/*   Updated: 2025/07/31 19:26:49 by kchiang          ###   ########.fr       */
+/*   Updated: 2025/08/01 02:06:49 by kchiang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,17 +23,16 @@ void	px_init_input_fd(int *fd, char **argv, t_vars *vars)
 	{
 		vars->append_mode = true;
 		if (pipe(pipefd) == -1)
-			px_perror_exit("pipe");
+			px_perror_exit("here_doc pipe");
 		px_parse_heredoc_fd(argv, pipefd[1]);
-		if (dup2(pipefd[0], *fd) == -1)
-			px_perror_exit("dup2");
-		(void)(close(pipefd[0]) + close(pipefd[1]));
+		close(pipefd[1]);
+		*fd = pipefd[0];
 	}
 	else
 	{
 		*fd = open(argv[1], O_RDONLY);
 		if (*fd == -1)
-			px_perror_exit("open");
+			px_perror_exit(argv[1]);
 	}
 	return ;
 }

@@ -1,5 +1,7 @@
 libft
+pipex
 test.c
+*.txt
 
 # Prerequisites
 *.d
