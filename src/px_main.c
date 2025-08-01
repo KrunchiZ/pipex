@@ -6,7 +6,7 @@
 /*   By: kchiang <kchiang@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/28 18:35:16 by kchiang           #+#    #+#             */
-/*   Updated: 2025/08/01 11:46:42 by kchiang          ###   ########.fr       */
+/*   Updated: 2025/08/01 12:16:10 by kchiang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,8 +54,9 @@ static void	px_file_valid_check(int argc, char **argv)
 	i = 1;
 	while (i < argc)
 	{
-		if (argv[i++][0] == '\0')
+		if (*(argv[i]) == '\0' || *(argv[i]) == '-')
 			px_error_abort("error: Invalid arguments.");
+		i++;
 	}
 	return ;
 }
