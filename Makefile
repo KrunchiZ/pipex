@@ -6,8 +6,8 @@ CFLAGS	= -Wall -Wextra -Werror -g3
 IFLAGS	= -Ilibft/include -Iinclude
 
 SRC		= \
-		  px_main.c		px_error.c	px_exec_pipex.c	\
-		  px_get_path.c	px_init_input_fd.c
+		  px_main.c		px_error.c			px_exec_pipex.c	\
+		  px_get_path.c	px_init_input_fd.c	px_split.c
 
 LIBFT_DIR	= libft/
 SRC_DIR		= src/
