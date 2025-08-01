@@ -6,7 +6,7 @@
 /*   By: kchiang <kchiang@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/31 16:24:33 by kchiang           #+#    #+#             */
-/*   Updated: 2025/07/31 19:24:01 by kchiang          ###   ########.fr       */
+/*   Updated: 2025/08/01 13:35:12 by kchiang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,9 +37,9 @@ char	*px_get_path(char *cmd, char **envp)
 			px_error_abort("error: ft_strjoin failed.");
 		free(tmp);
 		if (access(cmd_path, X_OK) == 0)
-			break ;
+			return (cmd_path);
 	}
-	return (cmd_path);
+	return (NULL);
 }
 
 static char	**px_parse_path_env(char **envp)

@@ -6,7 +6,7 @@
 /*   By: kchiang <kchiang@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 14:29:49 by kchiang           #+#    #+#             */
-/*   Updated: 2025/08/01 12:06:16 by kchiang          ###   ########.fr       */
+/*   Updated: 2025/08/01 13:36:32 by kchiang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,8 @@ static void	px_exec_child_process(t_vars vars, char **argv, int *pipefd
 	if (**cmd == '\0')
 		px_error_abort("error: Empty cmd string.");
 	execpath = px_get_path(cmd[0], vars.envp);
+	if (!execpath)
+		px_error_abort("error: Command not found.");
 	execve(execpath, cmd, vars.envp);
 	free(execpath);
 	px_perror_exit("execve");
