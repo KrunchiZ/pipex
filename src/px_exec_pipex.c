@@ -6,7 +6,7 @@
 /*   By: kchiang <kchiang@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 14:29:49 by kchiang           #+#    #+#             */
-/*   Updated: 2025/08/01 02:23:18 by kchiang          ###   ########.fr       */
+/*   Updated: 2025/08/01 12:06:16 by kchiang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,9 +80,9 @@ static void	px_init_output_fd(t_vars vars, char *file, int *pipefd)
 	{
 		close(pipefd[1]);
 		if (vars.append_mode == true)
-			out_fd = open(file, O_WRONLY | O_CREAT | O_APPEND);
+			out_fd = open(file, O_WRONLY | O_CREAT | O_APPEND, CHMOD_666);
 		else
-			out_fd = open(file, O_WRONLY | O_CREAT | O_TRUNC);
+			out_fd = open(file, O_WRONLY | O_CREAT | O_TRUNC, CHMOD_666);
 		if (out_fd == -1)
 			px_perror_exit(file);
 		if (dup2(out_fd, STDOUT_FILENO) == -1)

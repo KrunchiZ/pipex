@@ -6,7 +6,7 @@
 /*   By: kchiang <kchiang@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/28 15:52:19 by kchiang           #+#    #+#             */
-/*   Updated: 2025/07/31 19:15:12 by kchiang          ###   ########.fr       */
+/*   Updated: 2025/08/01 12:06:27 by kchiang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 # include <stdio.h>
 
 # define HERE_DOC	"here_doc"
+# define CHMOD_666	0666
 
 /* Whitespaces delimiter for ft_split.
  * */
