@@ -6,7 +6,7 @@
 /*   By: kchiang <kchiang@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 00:40:09 by kchiang           #+#    #+#             */
-/*   Updated: 2025/08/02 14:25:39 by kchiang          ###   ########.fr       */
+/*   Updated: 2025/08/02 21:24:02 by kchiang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,13 +24,13 @@ void	px_error_abort(char *str)
 	exit(EXIT_FAILURE);
 }
 
-void	px_free_env(char **env)
+void	px_free_arg(char **arg)
 {
 	int	i;
 
 	i = 0;
-	while (env[i])
-		free(env[i++]);
-	free(env);
+	while (arg[i])
+		free(arg[i++]);
+	free(arg);
 	return ;
 }
