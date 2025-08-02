@@ -6,7 +6,7 @@
 /*   By: kchiang <kchiang@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 09:19:41 by kchiang           #+#    #+#             */
-/*   Updated: 2025/08/01 20:01:35 by kchiang          ###   ########.fr       */
+/*   Updated: 2025/08/02 13:09:09 by kchiang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ static void	px_count_arg(const char *s, const char *set, int *count)
 			while ((quotes.single && s[i] && s[i] != '\'')
 				|| (quotes.dbl && s[i] && s[i] != '\"'))
 				i++;
-			while(s[i] && !ft_strchr(set, s[i]))
+			while (s[i] && !ft_strchr(set, s[i]))
 				i++;
 		}
 		else

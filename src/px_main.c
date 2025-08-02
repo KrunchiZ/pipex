@@ -6,7 +6,7 @@
 /*   By: kchiang <kchiang@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/28 18:35:16 by kchiang           #+#    #+#             */
-/*   Updated: 2025/08/01 12:57:09 by kchiang          ###   ########.fr       */
+/*   Updated: 2025/08/02 13:08:54 by kchiang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,8 @@ static void	px_arg_check(int argc, char **argv)
 	{
 		if (argc < 6)
 			px_error_abort("error: Invalid arguments.");
-		if (access(argv[argc - 1], F_OK) == 0 && access(argv[argc - 1], W_OK) == -1)
+		if (access(argv[argc - 1], F_OK) == 0
+			&& access(argv[argc - 1], W_OK) == -1)
 			px_perror_exit(argv[argc - 1]);
 	}
 	px_valid_check(argc, argv);
