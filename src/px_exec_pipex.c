@@ -6,7 +6,7 @@
 /*   By: kchiang <kchiang@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 14:29:49 by kchiang           #+#    #+#             */
-/*   Updated: 2025/08/05 15:34:19 by kchiang          ###   ########.fr       */
+/*   Updated: 2025/08/05 15:43:58 by kchiang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 static void	px_exec_child_process(t_vars vars, char **argv, int input_fd);
 static void	px_init_output(t_vars vars, char *file, char *execpath, char **cmd);
-static void px_dup_filefd(t_vars vars, char* file, char *execpath, char **cmd);
+static void	px_dup_filefd(t_vars vars, char *file, char *execpath, char **cmd);
 
 /* Piping function that recurses itself.
  * */
@@ -81,7 +81,7 @@ static void	px_init_output(t_vars vars, char *file, char *execpath, char **cmd)
 	return ;
 }
 
-static void px_dup_filefd(t_vars vars, char *file, char *execpath, char **cmd)
+static void	px_dup_filefd(t_vars vars, char *file, char *execpath, char **cmd)
 {
 	int	outfd;
 
