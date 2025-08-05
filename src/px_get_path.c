@@ -6,7 +6,7 @@
 /*   By: kchiang <kchiang@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/31 16:24:33 by kchiang           #+#    #+#             */
-/*   Updated: 2025/08/05 11:07:30 by kchiang          ###   ########.fr       */
+/*   Updated: 2025/08/05 20:43:38 by kchiang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ char	*px_get_path(char **cmd, char **envp)
 	if (!cmd_path)
 	{
 		px_free_arg(cmd);
-		px_error_abort("error: ft_strjoin failed.");
+		px_error_abort("pipex: ft_strjoin: './' + cmd failed");
 	}
 	if (access(cmd_path, X_OK) == 0)
 		return (cmd_path);
@@ -49,7 +49,7 @@ static char	**px_parse_path_env(char **envp, char **cmd, char *cmd_path)
 	{
 		free(cmd_path);
 		px_free_arg(cmd);
-		px_error_abort("error: ft_split failed.");
+		px_error_abort("pipex: ft_split: malloc failed");
 	}
 	return (env_paths);
 }
@@ -68,7 +68,6 @@ static char	*px_get_next_path(char **paths, char *cmd_path, char **cmd)
 			return (cmd_path);
 		}
 	}
-	px_free_arg(cmd);
 	px_free_arg(paths);
 	free(cmd_path);
 	return (NULL);
@@ -84,7 +83,7 @@ static char	*px_join_path(char **paths, char *path, char *cmd_path, char **cmd)
 	{
 		px_free_arg(cmd);
 		px_free_arg(paths);
-		px_error_abort("error: ft_strjoin path + '/' failed.");
+		px_error_abort("pipex: ft_strjoin: path + '/' failed");
 	}
 	cmd_path = ft_strjoin(tmp, cmd[0]);
 	if (!cmd_path)
@@ -92,7 +91,7 @@ static char	*px_join_path(char **paths, char *path, char *cmd_path, char **cmd)
 		free(tmp);
 		px_free_arg(cmd);
 		px_free_arg(paths);
-		px_error_abort("error: ft_strjoin path + cmd failed.");
+		px_error_abort("pipex: ft_strjoin: path + cmd failed");
 	}
 	free(tmp);
 	return (cmd_path);

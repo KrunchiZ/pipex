@@ -6,32 +6,35 @@
 /*   By: kchiang <kchiang@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 00:31:21 by kchiang           #+#    #+#             */
-/*   Updated: 2025/08/05 20:02:36 by kchiang          ###   ########.fr       */
+/*   Updated: 2025/08/05 21:15:55 by kchiang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-static int	px_input_is_heredoc(char *input_file);
 static void	px_parse_heredoc_fd(char **argv, int pipefd);
 
 void	px_init_input_fd(int *fd, char **argv, t_vars *vars)
 {
+	if (pipe(vars->pipefd) == -1)
+		px_perror_exit("pipex: pipe");
 	if (px_input_is_heredoc(argv[1]))
 	{
 		vars->append_mode = true;
-		if (pipe(vars->pipefd) == -1)
-			px_perror_exit("here_doc pipe");
 		px_parse_heredoc_fd(argv, vars->pipefd[1]);
-		close(vars->pipefd[1]);
 		*fd = vars->pipefd[0];
 	}
 	else
 	{
 		*fd = open(argv[1], O_RDONLY);
 		if (*fd == -1)
-			perror(argv[1]);
+		{
+			ft_putstr_fd("pipex: no such file or directory: ", STDERR_FILENO);
+			ft_putendl_fd(argv[1], STDERR_FILENO);
+			*fd = vars->pipefd[0];
+		}
 	}
+	close(vars->pipefd[1]);
 	return ;
 }
 

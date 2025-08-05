@@ -6,7 +6,7 @@
 /*   By: kchiang <kchiang@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 00:40:09 by kchiang           #+#    #+#             */
-/*   Updated: 2025/08/02 21:24:02 by kchiang          ###   ########.fr       */
+/*   Updated: 2025/08/05 20:39:20 by kchiang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ void	px_perror_exit(char *str)
 
 void	px_error_abort(char *str)
 {
-	ft_putendl_fd(str, 2);
+	ft_putendl_fd(str, STDERR_FILENO);
 	exit(EXIT_FAILURE);
 }
 

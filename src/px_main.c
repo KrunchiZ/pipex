@@ -6,7 +6,7 @@
 /*   By: kchiang <kchiang@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/28 18:35:16 by kchiang           #+#    #+#             */
-/*   Updated: 2025/08/05 20:01:12 by kchiang          ###   ########.fr       */
+/*   Updated: 2025/08/05 21:16:37 by kchiang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ int	main(int argc, char **argv, char **envp)
 
 	px_arg_check(argc, argv);
 	if (pipe(vars.pipefd) == -1)
-		px_perror_exit("pipe");
+		px_perror_exit("pipex: pipe");
 	pid = fork();
 	if (pid == 0)
 	{
@@ -44,15 +44,12 @@ int	main(int argc, char **argv, char **envp)
 
 static void	px_arg_check(int argc, char **argv)
 {
-	if (px_input_is_heredoc(argv[1]))
+	if (!px_input_is_heredoc(argv[1]))
 	{
 		if (argc < 5)
-			px_error_abort("error: Invalid arguments.");
+			px_error_abort("pipex: Invalid arguments.");
 	}
-	else
-	{
-		if (argc < 6)
-			px_error_abort("error: Invalid arguments.");
-	}
+	else if (argc < 6)
+		px_error_abort("pipex: Invalid arguments.");
 	return ;
 }

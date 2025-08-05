@@ -6,7 +6,7 @@
 /*   By: kchiang <kchiang@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 14:29:49 by kchiang           #+#    #+#             */
-/*   Updated: 2025/08/05 19:58:08 by kchiang          ###   ########.fr       */
+/*   Updated: 2025/08/05 21:00:59 by kchiang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,10 +25,10 @@ void	px_exec_pipex(t_vars vars, char **argv, int input_fd)
 	if (vars.cmd_count < 1)
 		return ;
 	if (pipe(vars.pipefd) == -1)
-		px_perror_exit("pipe");
+		px_perror_exit("pipex: pipe");
 	pid = fork();
 	if (pid == -1)
-		px_perror_exit("fork");
+		px_perror_exit("pipex: fork");
 	else if (pid == 0)
 		px_exec_child_process(vars, argv, input_fd);
 	else
@@ -53,18 +53,20 @@ static void	px_exec_child_process(t_vars vars, char **argv, int input_fd)
 	close(input_fd);
 	cmd = px_split(*argv, WHITESPACE);
 	if (!cmd)
-		px_error_abort("error: ft_split failed.");
+		px_error_abort("pipex: px_split failed");
 	execpath = px_get_path(cmd, vars.envp);
 	if (!execpath)
 	{
-		ft_putstr_fd(cmd[0], 2);
-		px_perror_exit(": command not found.");
+		ft_putstr_fd("pipex: command not found: ", STDERR_FILENO);
+		ft_putendl_fd(cmd[0], STDERR_FILENO);
+		px_free_arg(cmd);
+		exit(EXIT_FAILURE);
 	}
 	px_init_output(vars, argv[1], execpath, cmd);
 	execve(execpath, cmd, vars.envp);
 	free(execpath);
 	px_free_arg(cmd);
-	px_perror_exit("execve");
+	px_perror_exit("pipex: execve");
 	return ;
 }
 
@@ -76,7 +78,7 @@ static void	px_init_output(t_vars vars, char *file, char *execpath, char **cmd)
 		{
 			free(execpath);
 			px_free_arg(cmd);
-			px_perror_exit("dup2");
+			px_perror_exit("pipex: dup2");
 		}
 		close(vars.pipefd[1]);
 	}
@@ -98,13 +100,14 @@ static void	px_dup_filefd(t_vars vars, char *file, char *execpath, char **cmd)
 	{
 		free(execpath);
 		px_free_arg(cmd);
-		px_perror_exit(file);
+		ft_putstr_fd("pipex: no such file or directory: ", STDERR_FILENO);
+		px_error_abort(file);
 	}
 	if (dup2(outfd, STDOUT_FILENO) == -1)
 	{
 		free(execpath);
 		px_free_arg(cmd);
-		px_perror_exit("dup2");
+		px_perror_exit("pipex: dup2");
 	}
 	close(outfd);
 	return ;
