@@ -6,7 +6,7 @@
 /*   By: kchiang <kchiang@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/28 15:52:19 by kchiang           #+#    #+#             */
-/*   Updated: 2025/08/02 21:24:46 by kchiang          ###   ########.fr       */
+/*   Updated: 2025/08/05 15:32:33 by kchiang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,7 @@ typedef struct s_vars
 	char	**envp;
 	t_uchar	append_mode;
 	int		cmd_count;
+	int		pipefd[2];
 }			t_vars;
 
 void	px_perror_exit(char *str);
