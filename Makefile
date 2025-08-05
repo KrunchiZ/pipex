@@ -8,20 +8,29 @@ IFLAGS	= -Ilibft/include -Iinclude
 SRC		= \
 		  px_main.c		px_error.c			px_exec_pipex.c	\
 		  px_get_path.c	px_init_input_fd.c	px_split.c		\
-		  px_input_is_heredoc.c
+
+BSRC	= \
+		  px_main_bonus.c		px_error_bonus.c			px_exec_pipex_bonus.c	\
+		  px_get_path_bonus.c	px_init_input_fd_bonus.c	px_split_bonus.c		\
+		  px_input_is_heredoc_bonus.c
 
 LIBFT_DIR	= libft/
 SRC_DIR		= src/
+BSRC_DIR	= src_bonus/
 
-vpath %.c $(SRC_DIR)
+vpath %.c $(SRC_DIR) $(BSRC_DIR)
 
 GREEN	= \e[32m
 CYAN	= \e[36m
 WHITE	= \e[0m
 
-.PHONY: all fclean clean re
+.PHONY: all fclean clean re bonus
 
 all: $(NAME)
+
+bonus: $(BSRC) $(LIBFT)
+	@$(CC) $(CFLAGS) $(IFLAGS) $^ -o $(NAME)
+	@echo "Compiling $(GREEN)bonus$(WHITE)..."
 
 $(NAME): $(SRC) $(LIBFT)
 	@$(CC) $(CFLAGS) $(IFLAGS) $^ -o $@

@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   px_exec_pipex.c                                    :+:      :+:    :+:   */
+/*   px_exec_pipex_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: kchiang <kchiang@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 14:29:49 by kchiang           #+#    #+#             */
-/*   Updated: 2025/08/05 22:39:45 by kchiang          ###   ########.fr       */
+/*   Updated: 2025/08/05 22:37:16 by kchiang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "pipex.h"
+#include "pipex_bonus.h"
 
 static void	px_exec_child_process(t_vars vars, char **argv, int input_fd);
 static void	px_init_output(t_vars vars, char *file, char *execpath, char **cmd);
@@ -49,8 +49,8 @@ static void	px_exec_child_process(t_vars vars, char **argv, int input_fd)
 	char	*execpath;
 
 	close(vars.pipefd[0]);
-	if (input_fd == -1 || dup2(input_fd, STDIN_FILENO) == -1)
-		exit(EXIT_FAILURE);
+	if (dup2(input_fd, STDIN_FILENO) == -1)
+		px_perror_exit("pipex: dup2");
 	close(input_fd);
 	cmd = px_split(*argv, WHITESPACE);
 	if (!cmd)
@@ -93,7 +93,10 @@ static void	px_dup_filefd(t_vars vars, char *file, char *execpath, char **cmd)
 	int	outfd;
 
 	close(vars.pipefd[1]);
-	outfd = open(file, O_WRONLY | O_CREAT | O_TRUNC, CHMOD_666);
+	if (vars.append_mode == true)
+		outfd = open(file, O_WRONLY | O_CREAT | O_APPEND, CHMOD_666);
+	else
+		outfd = open(file, O_WRONLY | O_CREAT | O_TRUNC, CHMOD_666);
 	if (outfd == -1)
 	{
 		free(execpath);

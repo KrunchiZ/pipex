@@ -1,24 +1,36 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   px_input_is_heredoc.c                              :+:      :+:    :+:   */
+/*   px_error_bonus.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: kchiang <kchiang@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/08/05 20:01:23 by kchiang           #+#    #+#             */
-/*   Updated: 2025/08/05 20:01:53 by kchiang          ###   ########.fr       */
+/*   Created: 2025/07/30 00:40:09 by kchiang           #+#    #+#             */
+/*   Updated: 2025/08/05 22:15:06 by kchiang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "pipex.h"
+#include "pipex_bonus.h"
 
-int	px_input_is_heredoc(char *input_file)
+void	px_perror_exit(char *str)
 {
-	size_t	heredoc_len;
+	perror(str);
+	exit(EXIT_FAILURE);
+}
 
-	heredoc_len = ft_strlen(HERE_DOC);
-	if (ft_strlen(input_file) == heredoc_len
-		&& !ft_strncmp(input_file, HERE_DOC, heredoc_len))
-		return (true);
-	return (false);
+void	px_error_abort(char *str)
+{
+	ft_putendl_fd(str, STDERR_FILENO);
+	exit(EXIT_FAILURE);
+}
+
+void	px_free_arg(char **arg)
+{
+	int	i;
+
+	i = 0;
+	while (arg[i])
+		free(arg[i++]);
+	free(arg);
+	return ;
 }

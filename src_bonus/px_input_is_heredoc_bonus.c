@@ -1,24 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   px_init_input_fd.c                                 :+:      :+:    :+:   */
+/*   px_input_is_heredoc_bonus.c                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: kchiang <kchiang@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/30 00:31:21 by kchiang           #+#    #+#             */
-/*   Updated: 2025/08/05 22:25:46 by kchiang          ###   ########.fr       */
+/*   Created: 2025/08/05 20:01:23 by kchiang           #+#    #+#             */
+/*   Updated: 2025/08/05 22:15:48 by kchiang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "pipex.h"
+#include "pipex_bonus.h"
 
-void	px_init_input_fd(int *fd, char **argv)
+int	px_input_is_heredoc(char *input_file)
 {
-	*fd = open(argv[1], O_RDONLY);
-	if (*fd == -1)
-	{
-		ft_putstr_fd("pipex: no such file or directory: ", STDERR_FILENO);
-		ft_putendl_fd(argv[1], STDERR_FILENO);
-	}
-	return ;
+	size_t	heredoc_len;
+
+	heredoc_len = ft_strlen(HERE_DOC);
+	if (ft_strlen(input_file) == heredoc_len
+		&& !ft_strncmp(input_file, HERE_DOC, heredoc_len))
+		return (true);
+	return (false);
 }
