@@ -6,7 +6,7 @@
 /*   By: kchiang <kchiang@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 00:31:21 by kchiang           #+#    #+#             */
-/*   Updated: 2025/08/01 02:06:49 by kchiang          ###   ########.fr       */
+/*   Updated: 2025/08/05 20:02:36 by kchiang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,35 +17,22 @@ static void	px_parse_heredoc_fd(char **argv, int pipefd);
 
 void	px_init_input_fd(int *fd, char **argv, t_vars *vars)
 {
-	int		pipefd[2];
-
 	if (px_input_is_heredoc(argv[1]))
 	{
 		vars->append_mode = true;
-		if (pipe(pipefd) == -1)
+		if (pipe(vars->pipefd) == -1)
 			px_perror_exit("here_doc pipe");
-		px_parse_heredoc_fd(argv, pipefd[1]);
-		close(pipefd[1]);
-		*fd = pipefd[0];
+		px_parse_heredoc_fd(argv, vars->pipefd[1]);
+		close(vars->pipefd[1]);
+		*fd = vars->pipefd[0];
 	}
 	else
 	{
 		*fd = open(argv[1], O_RDONLY);
 		if (*fd == -1)
-			px_perror_exit(argv[1]);
+			perror(argv[1]);
 	}
 	return ;
-}
-
-static int	px_input_is_heredoc(char *input_file)
-{
-	size_t	heredoc_len;
-
-	heredoc_len = ft_strlen(HERE_DOC);
-	if (ft_strlen(input_file) == heredoc_len
-		&& !ft_strncmp(input_file, HERE_DOC, heredoc_len))
-		return (true);
-	return (false);
 }
 
 static void	px_parse_heredoc_fd(char **argv, int pipefd)

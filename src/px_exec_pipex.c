@@ -6,7 +6,7 @@
 /*   By: kchiang <kchiang@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 14:29:49 by kchiang           #+#    #+#             */
-/*   Updated: 2025/08/05 17:28:46 by kchiang          ###   ########.fr       */
+/*   Updated: 2025/08/05 19:58:08 by kchiang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,14 +49,17 @@ static void	px_exec_child_process(t_vars vars, char **argv, int input_fd)
 
 	close(vars.pipefd[0]);
 	if (dup2(input_fd, STDIN_FILENO) == -1)
-		px_perror_exit("dup2");
+		exit(EXIT_FAILURE);
 	close(input_fd);
 	cmd = px_split(*argv, WHITESPACE);
 	if (!cmd)
 		px_error_abort("error: ft_split failed.");
 	execpath = px_get_path(cmd, vars.envp);
 	if (!execpath)
-		px_error_abort("error: Command not found / Invalid command.");
+	{
+		ft_putstr_fd(cmd[0], 2);
+		px_perror_exit(": command not found.");
+	}
 	px_init_output(vars, argv[1], execpath, cmd);
 	execve(execpath, cmd, vars.envp);
 	free(execpath);
