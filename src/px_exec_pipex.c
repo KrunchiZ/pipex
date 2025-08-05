@@ -6,7 +6,7 @@
 /*   By: kchiang <kchiang@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 14:29:49 by kchiang           #+#    #+#             */
-/*   Updated: 2025/08/05 15:43:58 by kchiang          ###   ########.fr       */
+/*   Updated: 2025/08/05 17:28:46 by kchiang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,7 @@ static void	px_exec_child_process(t_vars vars, char **argv, int input_fd)
 	px_init_output(vars, argv[1], execpath, cmd);
 	execve(execpath, cmd, vars.envp);
 	free(execpath);
+	px_free_arg(cmd);
 	px_perror_exit("execve");
 	return ;
 }
