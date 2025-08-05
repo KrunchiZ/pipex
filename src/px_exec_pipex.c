@@ -6,13 +6,12 @@
 /*   By: kchiang <kchiang@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 14:29:49 by kchiang           #+#    #+#             */
-/*   Updated: 2025/08/05 22:39:45 by kchiang          ###   ########.fr       */
+/*   Updated: 2025/08/06 00:39:02 by kchiang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-static void	px_exec_child_process(t_vars vars, char **argv, int input_fd);
 static void	px_init_output(t_vars vars, char *file, char *execpath, char **cmd);
 static void	px_dup_filefd(t_vars vars, char *file, char *execpath, char **cmd);
 
@@ -20,16 +19,14 @@ static void	px_dup_filefd(t_vars vars, char *file, char *execpath, char **cmd);
  * */
 void	px_exec_pipex(t_vars vars, char **argv, int input_fd)
 {
-	pid_t	pid;
-
 	if (vars.cmd_count < 1)
 		return ;
 	if (pipe(vars.pipefd) == -1)
 		px_perror_exit("pipex: pipe");
-	pid = fork();
-	if (pid == -1)
+	vars.pid = fork();
+	if (vars.pid == -1)
 		px_perror_exit("pipex: fork");
-	else if (pid == 0 && input_fd != -1)
+	else if (vars.pid == 0)
 		px_exec_child_process(vars, argv, input_fd);
 	else
 	{
@@ -38,24 +35,25 @@ void	px_exec_pipex(t_vars vars, char **argv, int input_fd)
 		close(vars.pipefd[1]);
 		vars.cmd_count--;
 		px_exec_pipex(vars, argv + 1, vars.pipefd[0]);
-		waitpid(pid, NULL, 0);
+		waitpid(vars.pid, NULL, 0);
 	}
 	return ;
 }
 
-static void	px_exec_child_process(t_vars vars, char **argv, int input_fd)
+void	px_exec_child_process(t_vars vars, char **argv, int input_fd)
 {
 	char	**cmd;
 	char	*execpath;
 
 	close(vars.pipefd[0]);
-	if (input_fd == -1 || dup2(input_fd, STDIN_FILENO) == -1)
-		exit(EXIT_FAILURE);
+	if (dup2(input_fd, STDIN_FILENO) == -1)
+		px_perror_exit("pipex: dup2");
 	close(input_fd);
 	cmd = px_split(*argv, WHITESPACE);
 	if (!cmd)
 		px_error_abort("pipex: px_split failed");
 	execpath = px_get_path(cmd, vars.envp);
+	px_init_output(vars, argv[1], execpath, cmd);
 	if (!execpath)
 	{
 		ft_putstr_fd("pipex: command not found: ", STDERR_FILENO);
@@ -63,7 +61,6 @@ static void	px_exec_child_process(t_vars vars, char **argv, int input_fd)
 		px_free_arg(cmd);
 		exit(EXIT_FAILURE);
 	}
-	px_init_output(vars, argv[1], execpath, cmd);
 	execve(execpath, cmd, vars.envp);
 	free(execpath);
 	px_free_arg(cmd);

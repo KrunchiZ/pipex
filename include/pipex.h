@@ -6,7 +6,7 @@
 /*   By: kchiang <kchiang@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/28 15:52:19 by kchiang           #+#    #+#             */
-/*   Updated: 2025/08/05 22:26:10 by kchiang          ###   ########.fr       */
+/*   Updated: 2025/08/06 00:38:41 by kchiang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,12 +40,13 @@ typedef struct s_vars
 	char	**envp;
 	int		cmd_count;
 	int		pipefd[2];
+	pid_t	pid;
 }			t_vars;
 
 void	px_perror_exit(char *str);
 void	px_error_abort(char *str);
 void	px_free_arg(char **arg);
-void	px_init_input_fd(int *fd, char **argv);
+void	px_exec_child_process(t_vars vars, char **argv, int input_fd);
 void	px_exec_pipex(t_vars vars, char **argv, int input_fd);
 char	**px_split(const char *s, const char *set);
 char	*px_get_path(char **cmd, char **envp);
