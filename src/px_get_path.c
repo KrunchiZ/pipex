@@ -6,7 +6,7 @@
 /*   By: kchiang <kchiang@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/31 16:24:33 by kchiang           #+#    #+#             */
-/*   Updated: 2025/08/05 20:43:38 by kchiang          ###   ########.fr       */
+/*   Updated: 2025/08/10 11:05:11 by kchiang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,8 +69,7 @@ static char	*px_get_next_path(char **paths, char *cmd_path, char **cmd)
 		}
 	}
 	px_free_arg(paths);
-	free(cmd_path);
-	return (NULL);
+	return (cmd_path);
 }
 
 static char	*px_join_path(char **paths, char *path, char *cmd_path, char **cmd)
