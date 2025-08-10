@@ -6,7 +6,7 @@
 /*   By: kchiang <kchiang@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/28 18:35:16 by kchiang           #+#    #+#             */
-/*   Updated: 2025/08/06 00:52:05 by kchiang          ###   ########.fr       */
+/*   Updated: 2025/08/10 10:44:23 by kchiang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,9 @@ static void	px_parse_file_fd(char **argv, int pipefd)
 	fd = open(argv[1], O_RDONLY);
 	if (fd == -1)
 	{
-		ft_putstr_fd("pipex: no such file or directory: ", STDERR_FILENO);
+		ft_putstr_fd("pipex: ", STDERR_FILENO);
+		ft_putstr_fd(strerror(errno), STDERR_FILENO);
+		ft_putstr_fd(": ", STDERR_FILENO);
 		px_error_abort(argv[1]);
 	}
 	line = get_next_line(fd);
