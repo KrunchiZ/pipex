@@ -6,7 +6,7 @@
 /*   By: kchiang <kchiang@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/31 16:24:33 by kchiang           #+#    #+#             */
-/*   Updated: 2025/08/10 11:05:11 by kchiang          ###   ########.fr       */
+/*   Updated: 2025/08/11 17:47:48 by kchiang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,8 @@ char	*px_get_path(char **cmd, char **envp)
 	char	**env_paths;
 	char	*cmd_path;
 
+	if (access(cmd[0], X_OK) == 0)
+		return (ft_strdup(cmd[0]));
 	cmd_path = ft_strjoin("./", cmd[0]);
 	if (!cmd_path)
 	{

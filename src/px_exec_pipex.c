@@ -6,7 +6,7 @@
 /*   By: kchiang <kchiang@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 14:29:49 by kchiang           #+#    #+#             */
-/*   Updated: 2025/08/10 11:07:17 by kchiang          ###   ########.fr       */
+/*   Updated: 2025/08/11 18:04:21 by kchiang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,8 @@ void	px_exec_child_process(t_vars vars, char **argv, int input_fd)
 	if (!cmd)
 		px_error_abort("pipex: px_split failed");
 	execpath = px_get_path(cmd, vars.envp);
+	if (!execpath)
+		px_error_abort("pipex: ft_strdup failed");
 	execve(execpath, cmd, vars.envp);
 	free(execpath);
 	ft_putstr_fd("pipex: Command not found: ", STDERR_FILENO);
