@@ -6,13 +6,14 @@
 /*   By: kchiang <kchiang@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/28 18:35:16 by kchiang           #+#    #+#             */
-/*   Updated: 2025/08/06 17:13:41 by kchiang          ###   ########.fr       */
+/*   Updated: 2025/08/15 12:39:41 by kchiang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex_bonus.h"
 
 static void	px_arg_check(int argc, char **argv, t_vars *vars);
+static void	px_open_outfd(t_vars *vars, char *file);
 
 int	main(int argc, char **argv, char **envp)
 {
@@ -60,5 +61,22 @@ static void	px_arg_check(int argc, char **argv, t_vars *vars)
 	vars->cmd_count = argc - 3;
 	if (vars->append_mode)
 		vars->cmd_count--;
+	px_open_outfd(vars, argv[argc - 1]);
+	return ;
+}
+
+static void	px_open_outfd(t_vars *vars, char *file)
+{
+	if (vars->append_mode)
+		vars->outfd = open(file, O_WRONLY | O_CREAT | O_APPEND, CHMOD_666);
+	else
+		vars->outfd = open(file, O_WRONLY | O_CREAT | O_TRUNC, CHMOD_666);
+	if (vars->outfd == -1)
+	{
+		ft_putstr_fd("pipex: ", STDERR_FILENO);
+		ft_putstr_fd(strerror(errno), STDERR_FILENO);
+		ft_putstr_fd(": ", STDERR_FILENO);
+		ft_putendl_fd(file, STDERR_FILENO);
+	}
 	return ;
 }

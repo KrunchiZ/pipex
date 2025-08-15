@@ -6,14 +6,14 @@
 /*   By: kchiang <kchiang@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 14:29:49 by kchiang           #+#    #+#             */
-/*   Updated: 2025/08/11 18:04:41 by kchiang          ###   ########.fr       */
+/*   Updated: 2025/08/15 12:45:36 by kchiang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex_bonus.h"
 
-static void	px_init_output(t_vars vars, char *file);
-static void	px_dup_filefd(t_vars vars, char *file);
+static void	px_init_output(t_vars vars);
+static void	px_dup_filefd(t_vars vars);
 
 /* Piping function that recurses itself.
  * */
@@ -49,7 +49,7 @@ void	px_exec_child_process(t_vars vars, char **argv, int input_fd)
 	if (dup2(input_fd, STDIN_FILENO) == -1)
 		px_perror_exit("pipex: dup2");
 	close(input_fd);
-	px_init_output(vars, argv[1]);
+	px_init_output(vars);
 	cmd = px_split(*argv, WHITESPACE);
 	if (!cmd)
 		px_error_abort("pipex: px_split failed");
@@ -65,10 +65,10 @@ void	px_exec_child_process(t_vars vars, char **argv, int input_fd)
 	return ;
 }
 
-static void	px_init_output(t_vars vars, char *file)
+static void	px_init_output(t_vars vars)
 {
 	if (vars.cmd_count <= 1)
-		px_dup_filefd(vars, file);
+		px_dup_filefd(vars);
 	else
 	{
 		if (dup2(vars.pipefd[1], STDOUT_FILENO) == -1)
@@ -78,24 +78,13 @@ static void	px_init_output(t_vars vars, char *file)
 	return ;
 }
 
-static void	px_dup_filefd(t_vars vars, char *file)
+static void	px_dup_filefd(t_vars vars)
 {
-	int	outfd;
-
 	close(vars.pipefd[1]);
-	if (vars.append_mode == true)
-		outfd = open(file, O_WRONLY | O_CREAT | O_APPEND, CHMOD_666);
-	else
-		outfd = open(file, O_WRONLY | O_CREAT | O_TRUNC, CHMOD_666);
-	if (outfd == -1)
-	{
-		ft_putstr_fd("pipex: ", STDERR_FILENO);
-		ft_putstr_fd(strerror(errno), STDERR_FILENO);
-		ft_putstr_fd(": ", STDERR_FILENO);
-		px_error_abort(file);
-	}
-	if (dup2(outfd, STDOUT_FILENO) == -1)
+	if (vars.outfd == -1)
+		exit(EXIT_FAILURE);
+	if (dup2(vars.outfd, STDOUT_FILENO) == -1)
 		px_perror_exit("pipex: dup2");
-	close(outfd);
+	close(vars.outfd);
 	return ;
 }
