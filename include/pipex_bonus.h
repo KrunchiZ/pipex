@@ -6,7 +6,7 @@
 /*   By: kchiang <kchiang@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/28 15:52:19 by kchiang           #+#    #+#             */
-/*   Updated: 2025/08/19 20:12:30 by kchiang          ###   ########.fr       */
+/*   Updated: 2025/08/20 00:36:11 by kchiang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,7 @@ typedef struct s_quotes
 typedef struct s_vars
 {
 	char	**envp;
+	char	*infile;
 	t_uchar	append_mode;
 	int		cmd_count;
 	int		pipefd[2];
@@ -51,9 +52,9 @@ void	px_perror_exit(char *str);
 void	px_error_abort(char *str);
 void	px_free_arg(char **arg);
 int		px_input_is_heredoc(char *input_file);
-void	px_exec_first_child(char **argv, t_vars vars);
-void	px_exec_child_process(t_vars vars, char **argv, int input_fd);
-void	px_exec_pipex(t_vars vars, char **argv, int input_fd);
+void	px_parse_infile_fd(t_vars *vars);
+void	px_parse_heredoc_fd(char **argv, t_vars *vars);
+void	px_exec_pipex(t_vars vars, char **argv);
 char	**px_split(const char *s, const char *set);
 char	*px_get_path(char **cmd, char **envp);
 

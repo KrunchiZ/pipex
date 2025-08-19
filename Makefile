@@ -8,7 +8,7 @@ IFLAGS	= -Ilibft/include -Iinclude
 SRC		= \
 		  px_main.c		px_error.c	px_exec_pipex.c		\
 		  px_get_path.c	px_split.c	px_input_is_heredoc.c	\
-		  px_exec_first_child.c
+		  px_parse_input.c
 
 LIBFT_DIR	= libft/
 SRC_DIR		= src/
