@@ -6,7 +6,7 @@
 /*   By: kchiang <kchiang@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/28 15:52:19 by kchiang           #+#    #+#             */
-/*   Updated: 2025/08/19 17:13:27 by kchiang          ###   ########.fr       */
+/*   Updated: 2025/08/19 17:29:10 by kchiang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ void	px_perror_exit(char *str);
 void	px_error_abort(char *str);
 void	px_free_arg(char **arg);
 int		px_input_is_heredoc(char *input_file);
-void	px_init_input_fd(int *pipefd, char **argv, int cmd_count);
+void	px_exec_first_child(char **argv, t_vars vars);
 void	px_exec_child_process(t_vars vars, char **argv, int input_fd);
 void	px_exec_pipex(t_vars vars, char **argv, int input_fd);
 char	**px_split(const char *s, const char *set);

@@ -6,7 +6,7 @@
 /*   By: kchiang <kchiang@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/28 18:35:16 by kchiang           #+#    #+#             */
-/*   Updated: 2025/08/19 17:21:39 by kchiang          ###   ########.fr       */
+/*   Updated: 2025/08/19 17:28:58 by kchiang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,6 @@
 
 static void	px_arg_check(int argc, char **argv, t_vars *vars);
 static void	px_open_outfd(t_vars *vars, char *file);
-static void	px_exec_first_child(char **argv, t_vars vars);
 
 int	main(int argc, char **argv, char **envp)
 {
@@ -39,28 +38,6 @@ int	main(int argc, char **argv, char **envp)
 		waitpid(vars.pid, NULL, 0);
 	}
 	return (EXIT_SUCCESS);
-}
-
-static void	px_exec_first_child(char **argv, t_vars vars)
-{
-	int	pipefd[2];
-
-	if (pipe(pipefd) == -1)
-		px_perror_exit("pipex: pipe");
-	vars.pid = fork();
-	if (vars.pid == -1)
-		px_perror_exit("pipex: fork");
-	if (vars.pid == 0)
-		px_init_input_fd(pipefd, argv, vars.cmd_count);
-	else
-	{
-		close(pipefd[1]);
-		if (vars.append_mode)
-			argv++;
-		waitpid(vars.pid, NULL, 0);
-		px_exec_child_process(vars, argv + 2, pipefd[0]);
-	}
-	return ;
 }
 
 static void	px_arg_check(int argc, char **argv, t_vars *vars)

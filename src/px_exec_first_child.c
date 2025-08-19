@@ -1,22 +1,44 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   px_init_input_fd_bonus.c                           :+:      :+:    :+:   */
+/*   px_init_input_fd.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: kchiang <kchiang@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/06 17:06:33 by kchiang           #+#    #+#             */
-/*   Updated: 2025/08/19 17:01:53 by kchiang          ###   ########.fr       */
+/*   Updated: 2025/08/19 17:29:21 by kchiang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex_bonus.h"
 
+static void	px_init_input_fd(int *pipefd, char **argv, int cmd_count);
 static void	px_parse_heredoc_fd(char **argv, int pipefd, int cmd_count);
 static void	px_parse_file_fd(char **argv, int pipefd);
 static void	px_heredoc_prompt(int pipe_count);
 
-void	px_init_input_fd(int *pipefd, char **argv, int cmd_count)
+void	px_exec_first_child(char **argv, t_vars vars)
+{
+	int	pipefd[2];
+
+	if (pipe(pipefd) == -1)
+		px_perror_exit("pipex: pipe");
+	vars.pid = fork();
+	if (vars.pid == -1)
+		px_perror_exit("pipex: fork");
+	if (vars.pid == 0)
+		px_init_input_fd(pipefd, argv, vars.cmd_count);
+	else
+	{
+		close(pipefd[1]);
+		if (vars.append_mode)
+			argv++;
+		px_exec_child_process(vars, argv + 2, pipefd[0]);
+	}
+	return ;
+}
+
+static void	px_init_input_fd(int *pipefd, char **argv, int cmd_count)
 {
 	close(pipefd[0]);
 	if (px_input_is_heredoc(argv[1]))
