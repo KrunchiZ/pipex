@@ -6,7 +6,7 @@
 /*   By: kchiang <kchiang@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/28 18:35:16 by kchiang           #+#    #+#             */
-/*   Updated: 2025/08/15 12:43:59 by kchiang          ###   ########.fr       */
+/*   Updated: 2025/08/19 16:30:51 by kchiang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,8 +36,8 @@ int	main(int argc, char **argv, char **envp)
 	{
 		close(vars.pipefd[1]);
 		vars.cmd_count--;
-		waitpid(vars.pid, NULL, 0);
 		px_exec_pipex(vars, argv + 3, vars.pipefd[0]);
+		waitpid(vars.pid, NULL, 0);
 	}
 	return (EXIT_SUCCESS);
 }
