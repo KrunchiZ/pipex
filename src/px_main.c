@@ -6,13 +6,15 @@
 /*   By: kchiang <kchiang@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/28 18:35:16 by kchiang           #+#    #+#             */
-/*   Updated: 2025/08/19 17:28:58 by kchiang          ###   ########.fr       */
+/*   Updated: 2025/08/19 20:25:37 by kchiang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex_bonus.h"
 
 static void	px_arg_check(int argc, char **argv, t_vars *vars);
+static void	px_parse_heredoc_fd(char **argv, t_vars *vars);
+static void	px_heredoc_prompt(int pipe_count);
 static void	px_open_outfd(t_vars *vars, char *file);
 
 int	main(int argc, char **argv, char **envp)
@@ -56,8 +58,49 @@ static void	px_arg_check(int argc, char **argv, t_vars *vars)
 	}
 	vars->cmd_count = argc - 3;
 	if (vars->append_mode)
+	{
 		vars->cmd_count--;
+		px_parse_heredoc_fd(argv, vars);
+	}
 	px_open_outfd(vars, argv[argc - 1]);
+	return ;
+}
+
+static void	px_parse_heredoc_fd(char **argv, t_vars *vars)
+{
+	size_t	limiter_len;
+	char	*line;
+	int		pipefd[2];
+
+	if (pipe(pipefd) == -1)
+		perror("pipex: pipe");
+	limiter_len = ft_strlen(argv[2]);
+	px_heredoc_prompt(vars->cmd_count - 1);
+	line = get_next_line(STDIN_FILENO);
+	while (line)
+	{
+		if (ft_strlen(line) == limiter_len + 1
+			&& !ft_strncmp(line, argv[2], limiter_len))
+			break ;
+		write(pipefd[1], line, ft_strlen(line));
+		free(line);
+		px_heredoc_prompt(vars->cmd_count - 1);
+		line = get_next_line(STDIN_FILENO);
+	}
+	free(line);
+	vars->input_fd = pipefd[0];
+	close(pipefd[1]);
+	return ;
+}
+
+static void	px_heredoc_prompt(int pipe_count)
+{
+	int	i;
+
+	i = 0;
+	while (i++ < pipe_count)
+		write(STDOUT_FILENO, "pipe ", 5);
+	write(STDOUT_FILENO, "here_doc> ", 10);
 	return ;
 }
 
