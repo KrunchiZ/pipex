@@ -6,7 +6,7 @@
 /*   By: kchiang <kchiang@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/06 17:06:33 by kchiang           #+#    #+#             */
-/*   Updated: 2025/08/10 10:43:26 by kchiang          ###   ########.fr       */
+/*   Updated: 2025/08/19 17:01:53 by kchiang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,13 +16,9 @@ static void	px_parse_heredoc_fd(char **argv, int pipefd, int cmd_count);
 static void	px_parse_file_fd(char **argv, int pipefd);
 static void	px_heredoc_prompt(int pipe_count);
 
-void	px_init_input_fd(int *input_fd, char **argv, int cmd_count)
+void	px_init_input_fd(int *pipefd, char **argv, int cmd_count)
 {
-	int		pipefd[2];
-
-	if (pipe(pipefd) == -1)
-		px_perror_exit("pipex: pipe");
-	*input_fd = pipefd[0];
+	close(pipefd[0]);
 	if (px_input_is_heredoc(argv[1]))
 		px_parse_heredoc_fd(argv, pipefd[1], cmd_count);
 	else
