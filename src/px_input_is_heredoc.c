@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   px_input_is_heredoc_bonus.c                        :+:      :+:    :+:   */
+/*   px_input_is_heredoc.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: kchiang <kchiang@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 20:01:23 by kchiang           #+#    #+#             */
-/*   Updated: 2025/08/05 22:15:48 by kchiang          ###   ########.fr       */
+/*   Updated: 2025/08/20 01:34:33 by kchiang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "pipex_bonus.h"
+#include "pipex.h"
 
 int	px_input_is_heredoc(char *input_file)
 {

@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   px_get_path_bonus.c                                :+:      :+:    :+:   */
+/*   px_get_path.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: kchiang <kchiang@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/31 16:24:33 by kchiang           #+#    #+#             */
-/*   Updated: 2025/08/18 10:57:30 by kchiang          ###   ########.fr       */
+/*   Updated: 2025/08/20 01:34:13 by kchiang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "pipex_bonus.h"
+#include "pipex.h"
 
 static char	**px_parse_path_env(char **envp, char **cmd, char *cmd_path);
 static char	*px_get_next_path(char **paths, char *cmd_path, char **cmd);

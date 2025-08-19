@@ -6,11 +6,11 @@
 /*   By: kchiang <kchiang@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 14:29:49 by kchiang           #+#    #+#             */
-/*   Updated: 2025/08/20 01:14:41 by kchiang          ###   ########.fr       */
+/*   Updated: 2025/08/20 01:35:07 by kchiang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "pipex_bonus.h"
+#include "pipex.h"
 
 static void	px_parent_process(t_vars *vars, char ***argv, int *current_cmd);
 static void	px_child_process(t_vars vars, char **argv, int current_cmd);
