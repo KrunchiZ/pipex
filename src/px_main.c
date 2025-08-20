@@ -6,7 +6,7 @@
 /*   By: kchiang <kchiang@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/28 18:35:16 by kchiang           #+#    #+#             */
-/*   Updated: 2025/08/20 18:24:46 by kchiang          ###   ########.fr       */
+/*   Updated: 2025/08/20 19:23:30 by kchiang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,11 +15,12 @@
 static void	px_init_filefd(int argc, char **argv, t_vars *vars);
 static void	px_open_outfile(t_vars *vars, char *file);
 static void	px_init_pid_array(t_vars *vars);
-static void	px_wait_child(t_vars *vars);
+static void	px_wait_child(t_vars *vars, int *last_status);
 
 int	main(int argc, char **argv, char **envp)
 {
 	t_vars	vars;
+	int		last_status;
 
 	vars.envp = envp;
 	vars.infile = argv[1];
@@ -30,16 +31,10 @@ int	main(int argc, char **argv, char **envp)
 		px_exec_pipex(&vars, argv + 3);
 	else
 		px_exec_pipex(&vars, argv + 2);
-	px_wait_child(&vars);
+	px_wait_child(&vars, &last_status);
+	if (WIFEXITED(last_status))
+		exit(WEXITSTATUS(last_status));
 	return (EXIT_FAILURE);
-}
-
-static void	px_init_pid_array(t_vars *vars)
-{
-	vars->pid = ft_calloc(vars->cmd_count, sizeof(pid_t));
-	if (!vars->pid)
-		px_error_abort("Pipex: ft_calloc failed", EXIT_FAILURE);
-	return ;
 }
 
 static void	px_init_filefd(int argc, char **argv, t_vars *vars)
@@ -79,11 +74,18 @@ static void	px_open_outfile(t_vars *vars, char *file)
 	return ;
 }
 
-static void	px_wait_child(t_vars *vars)
+static void	px_init_pid_array(t_vars *vars)
+{
+	vars->pid = ft_calloc(vars->cmd_count, sizeof(pid_t));
+	if (!vars->pid)
+		px_error_abort("Pipex: ft_calloc failed", EXIT_FAILURE);
+	return ;
+}
+
+static void	px_wait_child(t_vars *vars, int *last_status)
 {
 	int		i;
 	int		status;
-	int		last_status;
 	pid_t	pid;
 
 	i = 0;
@@ -91,10 +93,8 @@ static void	px_wait_child(t_vars *vars)
 	{
 		pid = waitpid(-1, &status, 0);
 		if (pid == vars->pid[vars->cmd_count - 1])
-			last_status = status;
+			*last_status = status;
 	}
 	free(vars->pid);
-	if (WIFEXITED(last_status))
-		exit(WEXITSTATUS(last_status));
 	return ;
 }
