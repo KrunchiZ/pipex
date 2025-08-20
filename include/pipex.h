@@ -6,7 +6,7 @@
 /*   By: kchiang <kchiang@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/28 15:52:19 by kchiang           #+#    #+#             */
-/*   Updated: 2025/08/20 12:55:45 by kchiang          ###   ########.fr       */
+/*   Updated: 2025/08/20 13:52:01 by kchiang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,7 @@ typedef struct s_vars
 	pid_t	*pid;
 }			t_vars;
 
+void	px_perror_free_exit(char *str, pid_t *pid);
 void	px_perror_exit(char *str, int exit_code);
 void	px_error_abort(char *str, int exit_code);
 void	px_free_arg(char **arg);

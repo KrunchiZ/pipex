@@ -6,11 +6,17 @@
 /*   By: kchiang <kchiang@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 00:40:09 by kchiang           #+#    #+#             */
-/*   Updated: 2025/08/20 12:11:25 by kchiang          ###   ########.fr       */
+/*   Updated: 2025/08/20 13:52:11 by kchiang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
+
+void	px_perror_free_exit(char *str, pid_t *pid)
+{
+	free(pid);
+	px_perror_exit(str, EXIT_FAILURE);
+}
 
 void	px_perror_exit(char *str, int exit_code)
 {
