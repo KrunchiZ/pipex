@@ -6,44 +6,37 @@
 /*   By: kchiang <kchiang@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 14:29:49 by kchiang           #+#    #+#             */
-/*   Updated: 2025/08/20 13:48:13 by kchiang          ###   ########.fr       */
+/*   Updated: 2025/08/20 18:05:30 by kchiang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
 static void	px_parent_process(t_vars *vars, char ***argv, int *current_cmd);
-static void	px_child_process(t_vars vars, char **argv, int current_cmd);
-static void	px_init_output(t_vars vars, int current_cmd);
-static void	px_dup_filefd(t_vars vars);
+static void	px_child_process(t_vars *vars, char **argv, int current_cmd);
+static void	px_init_output(t_vars *vars, int current_cmd);
+static void	px_dup_filefd(t_vars *vars);
 
 /* Piping function that recurses itself.
  * */
-void	px_exec_pipex(t_vars vars, char **argv)
+void	px_exec_pipex(t_vars *vars, char **argv)
 {
 	int	current_cmd;
-	int	last_status;
 
 	current_cmd = 0;
-	while (current_cmd < vars.cmd_count)
+	while (current_cmd < vars->cmd_count)
 	{
-		if (pipe(vars.pipefd) == -1)
-			px_perror_free_exit("pipex: pipe", vars.pid);
-		vars.pid[current_cmd] = fork();
-		if (vars.pid[current_cmd] == -1)
-			px_perror_free_exit("pipex: fork", vars.pid);
-		if (vars.pid[current_cmd] == 0)
+		if (pipe(vars->pipefd) == -1)
+			px_perror_free_exit("pipex: pipe", vars->pid);
+		vars->pid[current_cmd] = fork();
+		if (vars->pid[current_cmd] == -1)
+			px_perror_free_exit("pipex: fork", vars->pid);
+		if (vars->pid[current_cmd] == 0)
 			px_child_process(vars, argv, current_cmd);
 		else
-			px_parent_process(&vars, &argv, &current_cmd);
+			px_parent_process(vars, &argv, &current_cmd);
 	}
-	current_cmd = 0;
-	while (current_cmd < vars.cmd_count)
-		waitpid(vars.pid[current_cmd++], &last_status, 0);
-	free(vars.pid);
-	if (WIFEXITED(last_status))
-		exit(WEXITSTATUS(last_status));
-	exit(EXIT_FAILURE);
+	return ;
 }
 
 static void	px_parent_process(t_vars *vars, char ***argv, int *current_cmd)
@@ -59,29 +52,31 @@ static void	px_parent_process(t_vars *vars, char ***argv, int *current_cmd)
 	}
 	(*current_cmd)++;
 	(*argv)++;
+	if (*current_cmd == vars->cmd_count)
+		close(vars->input_fd);
 	return ;
 }
 
-static void	px_child_process(t_vars vars, char **argv, int current_cmd)
+static void	px_child_process(t_vars *vars, char **argv, int current_cmd)
 {
 	char	**cmd;
 	char	*execpath;
 
-	free(vars.pid);
-	close(vars.pipefd[0]);
-	if (vars.input_fd == -1)
+	free(vars->pid);
+	close(vars->pipefd[0]);
+	if (vars->input_fd == -1)
 		exit(EXIT_FAILURE);
-	if (dup2(vars.input_fd, STDIN_FILENO) == -1)
+	if (dup2(vars->input_fd, STDIN_FILENO) == -1)
 		px_perror_exit("pipex: dup2", EXIT_FAILURE);
-	close(vars.input_fd);
+	close(vars->input_fd);
 	px_init_output(vars, current_cmd);
 	cmd = px_split(*argv, WHITESPACE);
 	if (!cmd)
 		px_error_abort("pipex: px_split failed", EXIT_FAILURE);
-	execpath = px_get_path(cmd, vars.envp);
+	execpath = px_get_path(cmd, vars->envp);
 	if (!execpath)
 		px_error_abort("pipex: ft_strdup failed", EXIT_FAILURE);
-	execve(execpath, cmd, vars.envp);
+	execve(execpath, cmd, vars->envp);
 	free(execpath);
 	ft_putstr_fd("pipex: ", STDERR_FILENO);
 	ft_putstr_fd(cmd[0], STDERR_FILENO);
@@ -91,26 +86,26 @@ static void	px_child_process(t_vars vars, char **argv, int current_cmd)
 	return ;
 }
 
-static void	px_init_output(t_vars vars, int current_cmd)
+static void	px_init_output(t_vars *vars, int current_cmd)
 {
-	if (current_cmd == vars.cmd_count - 1)
+	if (current_cmd == vars->cmd_count - 1)
 		px_dup_filefd(vars);
 	else
 	{
-		if (dup2(vars.pipefd[1], STDOUT_FILENO) == -1)
+		if (dup2(vars->pipefd[1], STDOUT_FILENO) == -1)
 			px_perror_exit("pipex: dup2", EXIT_FAILURE);
-		close(vars.pipefd[1]);
+		close(vars->pipefd[1]);
 	}
 	return ;
 }
 
-static void	px_dup_filefd(t_vars vars)
+static void	px_dup_filefd(t_vars *vars)
 {
-	close(vars.pipefd[1]);
-	if (vars.outfd == -1)
-		exit(PERM_DENIED);
-	if (dup2(vars.outfd, STDOUT_FILENO) == -1)
+	close(vars->pipefd[1]);
+	if (vars->outfd == -1)
+		exit(EXIT_FAILURE);
+	if (dup2(vars->outfd, STDOUT_FILENO) == -1)
 		px_perror_exit("pipex: dup2", EXIT_FAILURE);
-	close(vars.outfd);
+	close(vars->outfd);
 	return ;
 }
