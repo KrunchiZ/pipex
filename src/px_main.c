@@ -6,7 +6,7 @@
 /*   By: kchiang <kchiang@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/28 18:35:16 by kchiang           #+#    #+#             */
-/*   Updated: 2025/08/20 18:01:36 by kchiang          ###   ########.fr       */
+/*   Updated: 2025/08/20 18:24:46 by kchiang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,26 +32,6 @@ int	main(int argc, char **argv, char **envp)
 		px_exec_pipex(&vars, argv + 2);
 	px_wait_child(&vars);
 	return (EXIT_FAILURE);
-}
-
-static void	px_wait_child(t_vars *vars)
-{
-	int		i;
-	int		status;
-	int		last_status;
-	pid_t	pid;
-
-	i = 0;
-	while (i++ < vars->cmd_count)
-	{
-		pid = waitpid(-1, &status, 0);
-		if (pid == vars->pid[vars->cmd_count - 1])
-			last_status = status;
-	}
-	free(vars->pid);
-	if (WIFEXITED(last_status))
-		exit(WEXITSTATUS(last_status));
-	return ;
 }
 
 static void	px_init_pid_array(t_vars *vars)
@@ -96,5 +76,25 @@ static void	px_open_outfile(t_vars *vars, char *file)
 		ft_putstr_fd(": ", STDERR_FILENO);
 		ft_putendl_fd(strerror(errno), STDERR_FILENO);
 	}
+	return ;
+}
+
+static void	px_wait_child(t_vars *vars)
+{
+	int		i;
+	int		status;
+	int		last_status;
+	pid_t	pid;
+
+	i = 0;
+	while (i++ < vars->cmd_count)
+	{
+		pid = waitpid(-1, &status, 0);
+		if (pid == vars->pid[vars->cmd_count - 1])
+			last_status = status;
+	}
+	free(vars->pid);
+	if (WIFEXITED(last_status))
+		exit(WEXITSTATUS(last_status));
 	return ;
 }

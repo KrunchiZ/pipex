@@ -6,7 +6,7 @@
 /*   By: kchiang <kchiang@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 14:29:49 by kchiang           #+#    #+#             */
-/*   Updated: 2025/08/20 18:05:30 by kchiang          ###   ########.fr       */
+/*   Updated: 2025/08/20 18:59:48 by kchiang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,7 @@ void	px_exec_pipex(t_vars *vars, char **argv)
 		else
 			px_parent_process(vars, &argv, &current_cmd);
 	}
+	close(vars->outfd);
 	return ;
 }
 
@@ -63,9 +64,9 @@ static void	px_child_process(t_vars *vars, char **argv, int current_cmd)
 	char	*execpath;
 
 	free(vars->pid);
-	close(vars->pipefd[0]);
 	if (vars->input_fd == -1)
-		exit(EXIT_FAILURE);
+		px_closefd_exit(vars);
+	close(vars->pipefd[0]);
 	if (dup2(vars->input_fd, STDIN_FILENO) == -1)
 		px_perror_exit("pipex: dup2", EXIT_FAILURE);
 	close(vars->input_fd);
@@ -92,6 +93,7 @@ static void	px_init_output(t_vars *vars, int current_cmd)
 		px_dup_filefd(vars);
 	else
 	{
+		close(vars->outfd);
 		if (dup2(vars->pipefd[1], STDOUT_FILENO) == -1)
 			px_perror_exit("pipex: dup2", EXIT_FAILURE);
 		close(vars->pipefd[1]);

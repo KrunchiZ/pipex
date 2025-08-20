@@ -6,11 +6,19 @@
 /*   By: kchiang <kchiang@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 00:40:09 by kchiang           #+#    #+#             */
-/*   Updated: 2025/08/20 13:52:11 by kchiang          ###   ########.fr       */
+/*   Updated: 2025/08/20 18:58:25 by kchiang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
+
+void	px_closefd_exit(t_vars *vars)
+{
+	close(vars->pipefd[0]);
+	close(vars->pipefd[1]);
+	close(vars->outfd);
+	exit(EXIT_FAILURE);
+}
 
 void	px_perror_free_exit(char *str, pid_t *pid)
 {
