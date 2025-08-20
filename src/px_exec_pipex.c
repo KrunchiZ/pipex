@@ -6,7 +6,7 @@
 /*   By: kchiang <kchiang@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 14:29:49 by kchiang           #+#    #+#             */
-/*   Updated: 2025/08/20 01:35:07 by kchiang          ###   ########.fr       */
+/*   Updated: 2025/08/20 13:32:42 by kchiang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,25 +22,28 @@ static void	px_dup_filefd(t_vars vars);
 void	px_exec_pipex(t_vars vars, char **argv)
 {
 	int	current_cmd;
-	int	i;
+	int	last_status;
 
-	current_cmd = 1;
-	while (current_cmd <= vars.cmd_count)
+	current_cmd = 0;
+	while (current_cmd < vars.cmd_count)
 	{
 		if (pipe(vars.pipefd) == -1)
-			px_perror_exit("pipex: pipe");
-		vars.pid = fork();
-		if (vars.pid == -1)
-			px_perror_exit("pipex: fork");
-		if (vars.pid == 0)
+			px_perror_exit("pipex: pipe", EXIT_FAILURE);
+		vars.pid[current_cmd] = fork();
+		if (vars.pid[current_cmd] == -1)
+			px_perror_exit("pipex: fork", EXIT_FAILURE);
+		if (vars.pid[current_cmd] == 0)
 			px_child_process(vars, argv, current_cmd);
 		else
 			px_parent_process(&vars, &argv, &current_cmd);
 	}
-	i = 0;
-	while (i++ < vars.cmd_count)
-		wait(NULL);
-	return ;
+	current_cmd = 0;
+	while (current_cmd < vars.cmd_count)
+		waitpid(vars.pid[current_cmd++], &last_status, 0);
+	free(vars.pid);
+	if (WIFEXITED(last_status))
+		exit(WEXITSTATUS(last_status));
+	exit(EXIT_FAILURE);
 }
 
 static void	px_parent_process(t_vars *vars, char ***argv, int *current_cmd)
@@ -51,7 +54,7 @@ static void	px_parent_process(t_vars *vars, char ***argv, int *current_cmd)
 	else
 	{
 		if (dup2(vars->pipefd[0], vars->input_fd) == -1)
-			px_perror_exit("pipex: dup2");
+			px_perror_exit("pipex: dup2", EXIT_FAILURE);
 		close(vars->pipefd[0]);
 	}
 	(*current_cmd)++;
@@ -64,36 +67,38 @@ static void	px_child_process(t_vars vars, char **argv, int current_cmd)
 	char	**cmd;
 	char	*execpath;
 
+	free(vars.pid);
 	close(vars.pipefd[0]);
 	if (vars.input_fd == -1)
 		exit(EXIT_FAILURE);
 	if (dup2(vars.input_fd, STDIN_FILENO) == -1)
-		px_perror_exit("pipex: dup2");
+		px_perror_exit("pipex: dup2", EXIT_FAILURE);
 	close(vars.input_fd);
 	px_init_output(vars, current_cmd);
 	cmd = px_split(*argv, WHITESPACE);
 	if (!cmd)
-		px_error_abort("pipex: px_split failed");
+		px_error_abort("pipex: px_split failed", EXIT_FAILURE);
 	execpath = px_get_path(cmd, vars.envp);
 	if (!execpath)
-		px_error_abort("pipex: ft_strdup failed");
+		px_error_abort("pipex: ft_strdup failed", EXIT_FAILURE);
 	execve(execpath, cmd, vars.envp);
 	free(execpath);
-	ft_putstr_fd("pipex: Command not found: ", STDERR_FILENO);
-	ft_putendl_fd(cmd[0], STDERR_FILENO);
+	ft_putstr_fd("pipex: ", STDERR_FILENO);
+	ft_putstr_fd(cmd[0], STDERR_FILENO);
+	ft_putendl_fd(": Command not found", STDERR_FILENO);
 	px_free_arg(cmd);
-	exit(EXIT_FAILURE);
+	exit(NOT_FOUND);
 	return ;
 }
 
 static void	px_init_output(t_vars vars, int current_cmd)
 {
-	if (current_cmd == vars.cmd_count)
+	if (current_cmd == vars.cmd_count - 1)
 		px_dup_filefd(vars);
 	else
 	{
 		if (dup2(vars.pipefd[1], STDOUT_FILENO) == -1)
-			px_perror_exit("pipex: dup2");
+			px_perror_exit("pipex: dup2", EXIT_FAILURE);
 		close(vars.pipefd[1]);
 	}
 	return ;
@@ -103,9 +108,9 @@ static void	px_dup_filefd(t_vars vars)
 {
 	close(vars.pipefd[1]);
 	if (vars.outfd == -1)
-		exit(EXIT_FAILURE);
+		exit(PERM_DENIED);
 	if (dup2(vars.outfd, STDOUT_FILENO) == -1)
-		px_perror_exit("pipex: dup2");
+		px_perror_exit("pipex: dup2", EXIT_FAILURE);
 	close(vars.outfd);
 	return ;
 }

@@ -6,7 +6,7 @@
 /*   By: kchiang <kchiang@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/06 17:06:33 by kchiang           #+#    #+#             */
-/*   Updated: 2025/08/20 01:35:22 by kchiang          ###   ########.fr       */
+/*   Updated: 2025/08/20 12:10:24 by kchiang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,9 +20,9 @@ void	px_parse_infile_fd(t_vars *vars)
 	if (vars->input_fd == -1)
 	{
 		ft_putstr_fd("pipex: ", STDERR_FILENO);
-		ft_putstr_fd(strerror(errno), STDERR_FILENO);
+		ft_putstr_fd(vars->infile, STDERR_FILENO);
 		ft_putstr_fd(": ", STDERR_FILENO);
-		ft_putendl_fd(vars->infile, STDERR_FILENO);
+		ft_putendl_fd(strerror(errno), STDERR_FILENO);
 	}
 	return ;
 }

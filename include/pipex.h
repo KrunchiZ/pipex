@@ -6,7 +6,7 @@
 /*   By: kchiang <kchiang@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/28 15:52:19 by kchiang           #+#    #+#             */
-/*   Updated: 2025/08/20 01:35:34 by kchiang          ###   ########.fr       */
+/*   Updated: 2025/08/20 12:55:45 by kchiang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,10 @@
 # include <string.h>
 # include <errno.h>
 
-# define HERE_DOC	"here_doc"
-# define CHMOD_666	0666
+# define HERE_DOC		"here_doc"
+# define CHMOD_666		0666
+# define PERM_DENIED	126
+# define NOT_FOUND		127
 
 /* Whitespaces delimiter for ft_split.
  * */
@@ -45,11 +47,11 @@ typedef struct s_vars
 	int		pipefd[2];
 	int		outfd;
 	int		input_fd;
-	pid_t	pid;
+	pid_t	*pid;
 }			t_vars;
 
-void	px_perror_exit(char *str);
-void	px_error_abort(char *str);
+void	px_perror_exit(char *str, int exit_code);
+void	px_error_abort(char *str, int exit_code);
 void	px_free_arg(char **arg);
 int		px_input_is_heredoc(char *input_file);
 void	px_parse_infile_fd(t_vars *vars);

@@ -6,7 +6,7 @@
 /*   By: kchiang <kchiang@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/28 18:35:16 by kchiang           #+#    #+#             */
-/*   Updated: 2025/08/20 01:42:00 by kchiang          ###   ########.fr       */
+/*   Updated: 2025/08/20 13:34:56 by kchiang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 
 static void	px_init_filefd(int argc, char **argv, t_vars *vars);
 static void	px_open_outfile(t_vars *vars, char *file);
+static void	px_init_pid_array(t_vars *vars);
 
 int	main(int argc, char **argv, char **envp)
 {
@@ -23,11 +24,20 @@ int	main(int argc, char **argv, char **envp)
 	vars.infile = argv[1];
 	vars.cmd_count = argc - 3;
 	px_init_filefd(argc, argv, &vars);
+	px_init_pid_array(&vars);
 	if (vars.append_mode)
 		px_exec_pipex(vars, argv + 3);
 	else
 		px_exec_pipex(vars, argv + 2);
 	return (EXIT_SUCCESS);
+}
+
+static void	px_init_pid_array(t_vars *vars)
+{
+	vars->pid = ft_calloc(vars->cmd_count, sizeof(pid_t));
+	if (!vars->pid)
+		px_error_abort("Pipex: ft_calloc failed", EXIT_FAILURE);
+	return ;
 }
 
 static void	px_init_filefd(int argc, char **argv, t_vars *vars)
@@ -36,7 +46,7 @@ static void	px_init_filefd(int argc, char **argv, t_vars *vars)
 	{
 		vars->append_mode = true;
 		if (argc < 6)
-			px_error_abort("pipex: Invalid arguments.");
+			px_error_abort("pipex: Invalid arguments", EXIT_FAILURE);
 		vars->cmd_count--;
 		px_parse_heredoc_fd(argv, vars);
 	}
@@ -44,7 +54,7 @@ static void	px_init_filefd(int argc, char **argv, t_vars *vars)
 	{
 		vars->append_mode = false;
 		if (argc < 5)
-			px_error_abort("pipex: Invalid arguments.");
+			px_error_abort("pipex: Invalid arguments", EXIT_FAILURE);
 		px_parse_infile_fd(vars);
 	}
 	px_open_outfile(vars, argv[argc - 1]);
@@ -60,9 +70,9 @@ static void	px_open_outfile(t_vars *vars, char *file)
 	if (vars->outfd == -1)
 	{
 		ft_putstr_fd("pipex: ", STDERR_FILENO);
-		ft_putstr_fd(strerror(errno), STDERR_FILENO);
+		ft_putstr_fd(file, STDERR_FILENO);
 		ft_putstr_fd(": ", STDERR_FILENO);
-		ft_putendl_fd(file, STDERR_FILENO);
+		ft_putendl_fd(strerror(errno), STDERR_FILENO);
 	}
 	return ;
 }
