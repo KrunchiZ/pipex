@@ -6,7 +6,7 @@
 /*   By: kchiang <kchiang@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/28 18:35:16 by kchiang           #+#    #+#             */
-/*   Updated: 2025/08/20 20:21:38 by kchiang          ###   ########.fr       */
+/*   Updated: 2025/08/20 20:25:37 by kchiang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,6 +85,5 @@ static void	px_wait_child(t_vars *vars, int *last_status)
 		if (pid == vars->pid)
 			*last_status = status;
 	}
-	free(vars->pid);
 	return ;
 }
