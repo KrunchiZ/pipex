@@ -6,7 +6,7 @@
 /*   By: kchiang <kchiang@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/31 16:24:33 by kchiang           #+#    #+#             */
-/*   Updated: 2025/08/20 16:04:54 by kchiang          ###   ########.fr       */
+/*   Updated: 2025/08/20 22:08:03 by kchiang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,8 @@ char	*px_get_path(char **cmd, char **envp)
 	if (px_path_is_valid(cmd_path, false, cmd))
 		return (cmd_path);
 	env_paths = px_parse_path_env(envp, cmd, cmd_path);
+	if (!env_paths)
+		return (cmd_path);
 	return (px_get_next_path(env_paths, cmd_path, cmd));
 }
 
@@ -53,7 +55,8 @@ static int	px_path_is_valid(char *cmd_path, int only_cmd_zero, char **cmd)
 			px_error_abort(strerror(errno), PERM_DENIED);
 		}
 	}
-	if (only_cmd_zero && (*cmd_path == '/' || !ft_strncmp(cmd_path, "./", 2)))
+	if (only_cmd_zero && (*cmd_path == '/' || !ft_strncmp(cmd_path, "./", 2)
+			|| !ft_strncmp(cmd_path, "~/", 2)))
 	{
 		ft_putstr_fd("pipex: ", STDERR_FILENO);
 		ft_putstr_fd(cmd_path, STDERR_FILENO);
@@ -69,12 +72,15 @@ static char	**px_parse_path_env(char **envp, char **cmd, char *cmd_path)
 	char	*env_var;
 	char	**env_paths;
 
+	env_var = NULL;
 	while (*envp)
 	{
 		env_var = *envp++;
 		if (!ft_strncmp(env_var, "PATH=", 5))
 			break ;
 	}
+	if (!env_var)
+		return (NULL);
 	env_paths = ft_split(env_var, "=:");
 	if (!env_paths)
 	{
