@@ -19,10 +19,11 @@ GREEN	= \e[32m
 CYAN	= \e[36m
 WHITE	= \e[0m
 
-.PHONY: all fclean clean re
+.PHONY: all fclean clean re bonus
 .SILENT:
 
 all: $(NAME)
+bonus: all
 
 $(NAME): $(SRC) $(LIBFT)
 	$(CC) $(CFLAGS) $(IFLAGS) $^ -o $@
