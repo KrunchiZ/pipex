@@ -6,7 +6,7 @@
 /*   By: kchiang <kchiang@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 00:40:09 by kchiang           #+#    #+#             */
-/*   Updated: 2025/08/21 17:47:19 by kchiang          ###   ########.fr       */
+/*   Updated: 2025/08/21 19:17:45 by kchiang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,13 @@ void	px_perror_exit(char *str, int exit_code)
 
 void	px_error_abort(char *str, int exit_code)
 {
+	ft_putendl_fd(str, STDERR_FILENO);
+	exit(exit_code);
+}
+
+void	px_free_exit(char **cmd, char *str, int exit_code)
+{
+	px_free_arg(cmd);
 	ft_putendl_fd(str, STDERR_FILENO);
 	exit(exit_code);
 }

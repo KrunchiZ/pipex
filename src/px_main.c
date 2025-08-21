@@ -6,7 +6,7 @@
 /*   By: kchiang <kchiang@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/28 18:35:16 by kchiang           #+#    #+#             */
-/*   Updated: 2025/08/21 17:48:18 by kchiang          ###   ########.fr       */
+/*   Updated: 2025/08/21 19:15:59 by kchiang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,7 +81,7 @@ static void	px_wait_child(t_vars *vars, int *last_status)
 	i = 0;
 	while (i++ < vars->cmd_count)
 	{
-		pid = waitpid(-1, &status, 0);
+		pid = wait(&status);
 		if (pid == vars->pid)
 			*last_status = status;
 	}

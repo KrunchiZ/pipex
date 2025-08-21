@@ -6,7 +6,7 @@
 /*   By: kchiang <kchiang@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/28 15:52:19 by kchiang           #+#    #+#             */
-/*   Updated: 2025/08/21 17:48:29 by kchiang          ###   ########.fr       */
+/*   Updated: 2025/08/21 19:18:04 by kchiang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,7 @@ void	px_closefd_exit(t_vars *vars);
 void	px_perror_exit(char *str, int exit_code);
 void	px_error_abort(char *str, int exit_code);
 void	px_free_arg(char **arg);
+void	px_free_exit(char **cmd, char *str, int exit_code);
 int		px_input_is_heredoc(char *input_file);
 void	px_parse_infile_fd(t_vars *vars);
 void	px_parse_heredoc_fd(char **argv, t_vars *vars);

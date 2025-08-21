@@ -6,7 +6,7 @@
 /*   By: kchiang <kchiang@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 14:29:49 by kchiang           #+#    #+#             */
-/*   Updated: 2025/08/21 17:49:50 by kchiang          ###   ########.fr       */
+/*   Updated: 2025/08/21 19:17:50 by kchiang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,7 @@ static void	px_child_process(t_vars *vars, char **argv, int current)
 		px_error_abort("pipex: px_split failed", EXIT_FAILURE);
 	execpath = px_get_path(cmd, vars->envp);
 	if (!execpath)
-		px_error_abort("pipex: ft_strdup failed", EXIT_FAILURE);
+		px_free_exit(cmd, "pipex: ft_strdup failed", EXIT_FAILURE);
 	execve(execpath, cmd, vars->envp);
 	free(execpath);
 	ft_putstr_fd("pipex: ", STDERR_FILENO);
