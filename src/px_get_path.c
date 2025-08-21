@@ -6,7 +6,7 @@
 /*   By: kchiang <kchiang@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/31 16:24:33 by kchiang           #+#    #+#             */
-/*   Updated: 2025/08/20 22:08:03 by kchiang          ###   ########.fr       */
+/*   Updated: 2025/08/21 17:51:33 by kchiang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,10 +28,8 @@ char	*px_get_path(char **cmd, char **envp)
 	if (!cmd_path)
 	{
 		px_free_arg(cmd);
-		px_error_abort("pipex: ft_strjoin: './' + cmd failed", EXIT_FAILURE);
+		px_error_abort("pipex: ft_strjoin", EXIT_FAILURE);
 	}
-	if (px_path_is_valid(cmd_path, false, cmd))
-		return (cmd_path);
 	env_paths = px_parse_path_env(envp, cmd, cmd_path);
 	if (!env_paths)
 		return (cmd_path);
