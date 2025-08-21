@@ -6,41 +6,41 @@
 /*   By: kchiang <kchiang@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 14:29:49 by kchiang           #+#    #+#             */
-/*   Updated: 2025/08/20 20:26:46 by kchiang          ###   ########.fr       */
+/*   Updated: 2025/08/21 16:38:44 by kchiang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-static void	px_parent_process(t_vars *vars, char ***argv, int *current_cmd);
-static void	px_child_process(t_vars *vars, char **argv, int current_cmd);
-static void	px_init_output(t_vars *vars, int current_cmd);
+static void	px_parent_process(t_vars *vars, char ***argv, int *current);
+static void	px_child_process(t_vars *vars, char **argv, int current);
+static void	px_init_output(t_vars *vars, int current);
 static void	px_dup_filefd(t_vars *vars);
 
 /* Piping function that recurses itself.
  * */
 void	px_exec_pipex(t_vars *vars, char **argv)
 {
-	int	current_cmd;
+	int	current;
 
-	current_cmd = 0;
-	while (current_cmd < vars->cmd_count)
+	current = 0;
+	while (current < vars->cmd_count)
 	{
 		if (pipe(vars->pipefd) == -1)
-			px_perror_exit("pipex: pipe", EXIT_FAILURE);
-		vars->pid = fork();
-		if (vars->pid == -1)
-			px_perror_exit("pipex: fork", EXIT_FAILURE);
-		if (vars->pid == 0)
-			px_child_process(vars, argv, current_cmd);
+			px_perror_free_exit("pipex: pipe", vars->pid);
+		vars->pid[current] = fork();
+		if (vars->pid[current] == -1)
+			px_perror_free_exit("pipex: fork", vars->pid);
+		if (vars->pid[current] == 0)
+			px_child_process(vars, argv, current);
 		else
-			px_parent_process(vars, &argv, &current_cmd);
+			px_parent_process(vars, &argv, &current);
 	}
 	close(vars->outfd);
 	return ;
 }
 
-static void	px_parent_process(t_vars *vars, char ***argv, int *current_cmd)
+static void	px_parent_process(t_vars *vars, char ***argv, int *current)
 {
 	close(vars->pipefd[1]);
 	if (vars->input_fd == -1)
@@ -48,28 +48,29 @@ static void	px_parent_process(t_vars *vars, char ***argv, int *current_cmd)
 	else
 	{
 		if (dup2(vars->pipefd[0], vars->input_fd) == -1)
-			px_perror_exit("pipex: dup2", EXIT_FAILURE);
+			px_perror_free_exit("pipex: dup2", vars->pid);
 		close(vars->pipefd[0]);
 	}
-	(*current_cmd)++;
+	(*current)++;
 	(*argv)++;
-	if (*current_cmd == vars->cmd_count)
+	if (*current == vars->cmd_count)
 		close(vars->input_fd);
 	return ;
 }
 
-static void	px_child_process(t_vars *vars, char **argv, int current_cmd)
+static void	px_child_process(t_vars *vars, char **argv, int current)
 {
 	char	**cmd;
 	char	*execpath;
 
+	free(vars->pid);
 	if (vars->input_fd == -1)
 		px_closefd_exit(vars);
 	close(vars->pipefd[0]);
 	if (dup2(vars->input_fd, STDIN_FILENO) == -1)
 		px_perror_exit("pipex: dup2", EXIT_FAILURE);
 	close(vars->input_fd);
-	px_init_output(vars, current_cmd);
+	px_init_output(vars, current);
 	cmd = px_split(*argv, WHITESPACE);
 	if (!cmd)
 		px_error_abort("pipex: px_split failed", EXIT_FAILURE);
@@ -77,18 +78,12 @@ static void	px_child_process(t_vars *vars, char **argv, int current_cmd)
 	if (!execpath)
 		px_error_abort("pipex: ft_strdup failed", EXIT_FAILURE);
 	execve(execpath, cmd, vars->envp);
-	free(execpath);
-	ft_putstr_fd("pipex: ", STDERR_FILENO);
-	ft_putstr_fd(cmd[0], STDERR_FILENO);
-	ft_putendl_fd(": Command not found", STDERR_FILENO);
-	px_free_arg(cmd);
-	exit(NOT_FOUND);
-	return ;
+	px_cmd_error(execpath, cmd);
 }
 
-static void	px_init_output(t_vars *vars, int current_cmd)
+static void	px_init_output(t_vars *vars, int current)
 {
-	if (current_cmd == vars->cmd_count - 1)
+	if (current == vars->cmd_count - 1)
 		px_dup_filefd(vars);
 	else
 	{

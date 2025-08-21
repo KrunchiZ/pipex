@@ -6,7 +6,7 @@
 /*   By: kchiang <kchiang@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 00:40:09 by kchiang           #+#    #+#             */
-/*   Updated: 2025/08/20 20:20:28 by kchiang          ###   ########.fr       */
+/*   Updated: 2025/08/21 15:56:39 by kchiang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,12 @@ void	px_closefd_exit(t_vars *vars)
 	close(vars->pipefd[1]);
 	close(vars->outfd);
 	exit(EXIT_FAILURE);
+}
+
+void	px_perror_free_exit(char *str, pid_t *pid)
+{
+	free(pid);
+	px_perror_exit(str, EXIT_FAILURE);
 }
 
 void	px_perror_exit(char *str, int exit_code)
