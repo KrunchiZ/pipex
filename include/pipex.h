@@ -6,7 +6,7 @@
 /*   By: kchiang <kchiang@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/28 15:52:19 by kchiang           #+#    #+#             */
-/*   Updated: 2025/08/21 16:03:15 by kchiang          ###   ########.fr       */
+/*   Updated: 2025/08/20 20:20:23 by kchiang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,12 +47,11 @@ typedef struct s_vars
 	int		pipefd[2];
 	int		outfd;
 	int		input_fd;
-	pid_t	*pid;
+	pid_t	pid;
 }			t_vars;
 
 void	px_closefd_exit(t_vars *vars);
 void	px_perror_exit(char *str, int exit_code);
-void	px_perror_free_exit(char *str, pid_t *pid);
 void	px_error_abort(char *str, int exit_code);
 void	px_free_arg(char **arg);
 int		px_input_is_heredoc(char *input_file);
@@ -61,7 +60,5 @@ void	px_parse_heredoc_fd(char **argv, t_vars *vars);
 void	px_exec_pipex(t_vars *vars, char **argv);
 char	**px_split(const char *s, const char *set);
 char	*px_get_path(char **cmd, char **envp);
-int		px_is_absolute_path(char *cmd_path);
-void	px_cmd_error(char *execpath, char **cmd);
 
 #endif
