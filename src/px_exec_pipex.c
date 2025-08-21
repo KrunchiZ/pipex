@@ -6,7 +6,7 @@
 /*   By: kchiang <kchiang@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 14:29:49 by kchiang           #+#    #+#             */
-/*   Updated: 2025/08/21 17:34:47 by kchiang          ###   ########.fr       */
+/*   Updated: 2025/08/21 17:38:41 by kchiang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ static void	px_child_process(t_vars *vars, char **argv, int current)
 	char	**cmd;
 	char	*execpath;
 
-	free(vars->pid)
+	free(vars->pid);
 	if (vars->input_fd == -1)
 		px_closefd_exit(vars);
 	close(vars->pipefd[0]);
