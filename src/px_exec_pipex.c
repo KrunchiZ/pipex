@@ -6,7 +6,7 @@
 /*   By: kchiang <kchiang@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 14:29:49 by kchiang           #+#    #+#             */
-/*   Updated: 2025/08/21 19:17:50 by kchiang          ###   ########.fr       */
+/*   Updated: 2025/08/22 14:47:47 by kchiang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,13 +77,7 @@ static void	px_child_process(t_vars *vars, char **argv, int current)
 	if (!execpath)
 		px_free_exit(cmd, "pipex: ft_strdup failed", EXIT_FAILURE);
 	execve(execpath, cmd, vars->envp);
-	free(execpath);
-	ft_putstr_fd("pipex: ", STDERR_FILENO);
-	ft_putstr_fd(cmd[0], STDERR_FILENO);
-	ft_putendl_fd(": Command not found", STDERR_FILENO);
-	px_free_arg(cmd);
-	exit(NOT_FOUND);
-	return ;
+	px_cmd_error(execpath, cmd);
 }
 
 static void	px_init_output(t_vars *vars, int current)
