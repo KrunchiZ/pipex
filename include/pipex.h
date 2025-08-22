@@ -6,7 +6,7 @@
 /*   By: kchiang <kchiang@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/28 15:52:19 by kchiang           #+#    #+#             */
-/*   Updated: 2025/08/22 14:49:10 by kchiang          ###   ########.fr       */
+/*   Updated: 2025/08/21 19:18:04 by kchiang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,6 +61,5 @@ void	px_parse_heredoc_fd(char **argv, t_vars *vars);
 void	px_exec_pipex(t_vars *vars, char **argv);
 char	**px_split(const char *s, const char *set);
 char	*px_get_path(char **cmd, char **envp);
-void	px_cmd_error(char *execpath, char **cmd);
 
 #endif
